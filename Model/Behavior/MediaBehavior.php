@@ -1,11 +1,13 @@
 <?php
 class MediaBehavior extends ModelBehavior{
 
+	private $options = array(
+		'path'    => 'uploads/%y/%m/%f',
+		'formats' => false
+	);
 
 	public function setup($model,$options = array()){
-		if(!isset($model->uploads)){
-			$model->uploads = 'uploads/%y/%m/%f';
-		}
+		$model->medias = array_merge($this->options,$options); 
 		$model->hasMany['Media'] = array(
 			'className'  => 'Media.Media',
 			'foreignKey' => 'ref_id',

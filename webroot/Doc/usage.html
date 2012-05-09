@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Projets | Jonathan Boyer</title>
+        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans|Kreon' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/JB/css/style.css" />    
+  </head>
+
+
+  <body>
+    
+  	<div id="root">
+      <header class="header">
+        <a href="http://jonathan-boyer.fr/" class="logo">
+          <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />        </a>
+        <nav>
+          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>          
+          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>          
+          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>         
+          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>          
+          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>          
+          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>        
+        </nav>
+      </header>
+
+      <h1>Plugin Media</h1>
+      <span class="subtitle">Pour CakePHP</span>
+
+      <nav class="secondary">
+        <a href="index.html">Présentation</a>
+        <a href="install.html">Installation</a>
+        <a href="usage.html" class="active">Utilisation</a>
+        <a href="config.html">Configuration</a>
+      </nav>
+
+      <h2>Le behaviour</h2>
+
+      <p>Pour utiliser le plugin Media vous devez d'abord charger le Behaviour sur vos models. Par exemple si pour mes article je veux pouvoir avec des images liées : </p>
+
+      <pre>&lt;?php
+clPost extends AppModel{
+
+  public $actsAs = array(
+    'Containable',
+    'Media.Media' => array(
+      // Ici vous pouvez spécifier des options
+    )
+  ); 
+}</pre>
+
+      <p>Il est conseillé d'utiliser le Behaviour containable afin d'avoir un contrôle total sur les liaisons qui seront faites à l'avenir (pour des raisons de performances essentiellement.</p>
+
+      <p>Ce behaviour rajoute 2 liaisons à votre model : </p>
+
+      <ul>
+        <li><strong>belongsTo Thumb</strong>, afin de récupérer l'image à la une de votre contenu. Ne fonctionne que si votre table à un champs <strong>media_id</strong></li>
+        <li><strong>hasMany</strong>, permet de récupérer toutes les images liées à un contenu.</li>
+      </ul>
+
+      <p>Et plusieurs champs lors d'un AppModel::find() si vous ajoutez la liaison avec le model Thumb</p>
+
+      <ul>
+        <li>Un champs "thumb" contenant l'url de l'image à la une sera ajouté aux champs de votre model</li>
+        <li>Un champs "thumbf" contenant l'url de l'image <a href="#redim">redimensionnable</a></li>
+      </ul>
+
+      <h2>Helper</h2>
+
+      <p>Maintenant que tout est en place il faut pouvoir ajouter, éditer et supprimer des images. Pour réaliser cela le plugin apporte un helper "Uploader" qui vous permet de générer une interface drag & drop rapidement pour gérer les médias. Cet helper fonctionne de 2 façon : </p>
+
+      <p>Soit vous pouvez créer une iframe vers le gestionnaire de média :</p>
+
+      <pre>&lt;?php echo $this->Uploader->iframe('MODEL',ID); ?></pre>
+
+      <p>Ou au sain d'un formulaire ($this->Form->create()) vous pouvez créer un champs utilisant tinyMCE, cette méthode prend les même paramètre que la méthode <a href="http://api20.cakephp.org/class/form-helper#method-FormHelperinput">FormHelper::input</a>.</p>
+
+      <pre>&lt;?php echo $this->Uploader->tinymce($fieldName, $options = array ( )); ?></pre>
+
+      <h2 id="redim">Redimensionnement</h2>
+
+      <p>Maintenant que vous avez vos outils pour ajouter et récupérer les images il est temps de les afficher et de les redimensionner. Pour ce plugin j'ai pris le parti de ne pas gérer l'upload à l'envois mais plutôt à l'affichage. Lorsque quelqu'un demande une image d'un certain format elle est généré.</p>
+
+      <p>Par exemple je récupère l'image à la une d'un article, j'obtiens donc un champs thumbf</p>
+
+      <pre>&lt;?php echo $this->Html->image(sprintf($post['thumbf']),200,300); ?></pre>
+
+      <p>Ceci permet d'obtenir une url d'image se terminant par _[largeur]x[hauteur].jpg, pour la générer on peut utiliser les routes.</p>
+
+      <pre>Router::connect('/img/:file_:format.jpg', array('controller' => 'medias', 'action' => 'crop', 'plugin' => 'media' ),array(
+  'file' => 'uploads\/[0-9]{4}\/[0-9]{2}\/[^\/]+',
+  'format' => '200x300|200x150'
+));</pre>
+
+      <ul>
+        <li><strong>file</strong> est une expression régulière indiquant le nom du fichier par rapport au dossier img (sans l'extension)</li>
+        <li><strong>format</strong> inque les différents formats accepté par votre application</li>
+      </ul>
+
+      <p>&nbsp;</p>
+
+
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      <script type="text/javascript" src="/JB/js/min.js"></script>
+
+</footer>
+</body>
+</html>

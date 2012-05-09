@@ -120,7 +120,6 @@ jQuery(function(){
 		for (var i in files) {
 			$('#filelist>form').prepend('<div class="item" id="' + files[i].id + '">' + files[i].name + ' (' + plupload.formatSize(files[i].size) + ') <div class="progressbar"><div class="progress"></div></div></div>');
 		}
-		theFrame.animate({ height:theFrame.height() - 40 }); 
 		uploader.start();
 		$('#droparea').removeClass('dropping'); 
 		theFrame.css({ height:$('body').height() + 40 }); 
@@ -133,7 +132,7 @@ jQuery(function(){
 
 	uploader.bind('FileUploaded', function(up, file, response){
 		$('#'+file.id).after(response.response);
-		$('#'+file.id).remove()
+		$('#'+file.id).remove();
 	});
 
 	$('#droparea').bind({

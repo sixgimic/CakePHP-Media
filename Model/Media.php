@@ -28,17 +28,19 @@ class Media extends AppModel{
 	function beforeSave($options = array()){
 		if( isset($this->data['Media']['file']) && is_array($this->data['Media']['file']) && isset($this->data['Media']['ref']) ){
 			$model 		= ClassRegistry::init($this->data['Media']['ref']);
-			$dir 		= $model->uploads;
+			$dir 		= $model->medias['path'];
+			$ref_id 	= $this->data['Media']['ref_id']; 
 			$pathinfo 	= pathinfo($this->data['Media']['file']['name']);
-			$filename 	= Inflector::slug($pathinfo['filename'],'-').'.'.$pathinfo['extension'];
-			$search 	= array('%y','%m','%f','%id','%mid');
-			$replace 	= array(date('Y'),date('m'),$filename,$model->id,ceil($model->id/1000));
-			$dir  		= str_replace($search,$replace,$dir);
+			$filename 	= Inflector::slug($pathinfo['filename'],'-');
+			$search 	= array('%y','%m','%f','%id','%mid','%cid');
+			$replace 	= array(date('Y'),date('m'),Inflector::slug($filename),$ref_id,ceil($ref_id/1000),ceil($ref_id/100));
+			$dir  		= str_replace($search,$replace,$dir).'.'.$pathinfo['extension'];
 			$this->testDuplicate($dir); 
 			if(!file_exists(dirname(IMAGES.$dir))){
 				mkdir(dirname(IMAGES.$dir),0777,true);
 			}
 			move_uploaded_file($this->data['Media']['file']['tmp_name'], IMAGES.$dir);
+			chmod(IMAGES.$dir,0777);
 			$this->data['Media']['file'] = $dir;
 		}
 		return true; 
