@@ -32,8 +32,8 @@ class Media extends AppModel{
 			$ref_id 	= $this->data['Media']['ref_id']; 
 			$pathinfo 	= pathinfo($this->data['Media']['file']['name']);
 			$filename 	= Inflector::slug($pathinfo['filename'],'-');
-			$search 	= array('%y','%m','%f','%id','%mid','%cid');
-			$replace 	= array(date('Y'),date('m'),Inflector::slug($filename),$ref_id,ceil($ref_id/1000),ceil($ref_id/100));
+			$search 	= array('%id','%mid','%cid','%y','%m','%f');
+			$replace 	= array($ref_id,ceil($ref_id/1000),ceil($ref_id/100),date('Y'),date('m'),Inflector::slug($filename));
 			$dir  		= str_replace($search,$replace,$dir).'.'.$pathinfo['extension'];
 			$this->testDuplicate($dir); 
 			if(!file_exists(dirname(IMAGES.$dir))){
