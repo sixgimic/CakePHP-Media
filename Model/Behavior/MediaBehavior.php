@@ -25,7 +25,7 @@ class MediaBehavior extends ModelBehavior{
 		}
 	}
 
-	public function afterSave(Model $model, $primary){
+	public function afterSave(Model $model, $primary = false){
 		if(!empty($model->data[$model->name]['thumb']['name'])){
 			$file = $model->data[$model->name]['thumb'];
 
