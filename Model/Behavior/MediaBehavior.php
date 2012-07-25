@@ -6,8 +6,8 @@ class MediaBehavior extends ModelBehavior{
 		'formats' => false
 	);
 
-	public function setup($model,$options = array()){
-		$model->medias = array_merge($this->options,$options); 
+	public function setup(Model $model,$options = array()){
+		$model->medias = array_merge($this->options,$options);
 		$model->hasMany['Media'] = array(
 			'className'  => 'Media.Media',
 			'foreignKey' => 'ref_id',
@@ -25,14 +25,14 @@ class MediaBehavior extends ModelBehavior{
 		}
 	}
 
-	public function afterSave($model){
+	public function afterSave(Model $model, $primary){
 		if(!empty($model->data[$model->name]['thumb']['name'])){
-			$file = $model->data[$model->name]['thumb']; 
-			
+			$file = $model->data[$model->name]['thumb'];
+
 			// Current thumb
 			$media_id = $model->field('media_id');
 			if($media_id != 0){
-				$model->Media->delete($media_id); 
+				$model->Media->delete($media_id);
 			}
 
 			// Upadte thumb
@@ -45,7 +45,7 @@ class MediaBehavior extends ModelBehavior{
 		}
 	}
 
-	public function afterFind($model,$data){
+	public function afterFind(Model $model, $data, $created){
 		foreach($data as $k=>$v){
 			// Thumbnail
 			if(isset($v['Thumb']['file'])){
@@ -65,7 +65,7 @@ class MediaBehavior extends ModelBehavior{
 		return $data;
 	}
 
-	
+
 
 
 
