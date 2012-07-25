@@ -25,7 +25,7 @@ class MediaBehavior extends ModelBehavior{
 		}
 	}
 
-	public function afterSave(Model $model, $primary = false){
+	public function afterSave(Model $model, $created){
 		if(!empty($model->data[$model->name]['thumb']['name'])){
 			$file = $model->data[$model->name]['thumb'];
 
@@ -45,7 +45,7 @@ class MediaBehavior extends ModelBehavior{
 		}
 	}
 
-	public function afterFind(Model $model, $data, $created){
+	public function afterFind(Model $model, $data, $primary = false){
 		foreach($data as $k=>$v){
 			// Thumbnail
 			if(isset($v['Thumb']['file'])){
