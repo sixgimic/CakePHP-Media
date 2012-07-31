@@ -9,23 +9,23 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans|Kreon' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />    
+    <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />
   </head>
 
 
   <body>
-    
+
   	<div id="root">
       <header class="header">
         <a href="http://jonathan-boyer.fr/" class="logo">
           <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />        </a>
         <nav>
-          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>          
-          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>          
-          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>         
-          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>          
-          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>          
-          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>        
+          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>
+          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>
+          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>
+          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>
+          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>
+          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>
         </nav>
       </header>
 
@@ -44,14 +44,14 @@
       <p>Pour utiliser le plugin Media vous devez d'abord charger le Behaviour sur vos models. Par exemple si pour mes article je veux pouvoir avec des images liées : </p>
 
       <pre>&lt;?php
-clPost extends AppModel{
+class Post extends AppModel{
 
   public $actsAs = array(
     'Containable',
     'Media.Media' => array(
       // Ici vous pouvez spécifier des options
     )
-  ); 
+  );
 }</pre>
 
       <p>Il est conseillé d'utiliser le Behaviour containable afin d'avoir un contrôle total sur les liaisons qui seront faites à l'avenir (pour des raisons de performances essentiellement.</p>
