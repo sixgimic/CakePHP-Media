@@ -15,11 +15,9 @@ class Media extends AppModel{
 	}
 
 	function afterFind($results, $primary = false){
-		foreach($results as $k=>$v){
-			$i = key($v);
-			$v = current($v);
-			if(isset($v['file'])){
-				$results[$k][$i]['filef'] = substr($v['file'],0,-4).'_%dx%d.jpg';
+		foreach($results as $k=>$result){
+			if(isset($result[$this->alias]['file'])){
+				$results[$k][$this->alias]['filef'] = substr($result[$this->alias]['file'],0,-4).'_%dx%d.jpg';
 			}
 		}
 		return $results;

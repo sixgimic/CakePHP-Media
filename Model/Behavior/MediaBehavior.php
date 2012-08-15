@@ -49,8 +49,8 @@ class MediaBehavior extends ModelBehavior{
 		foreach($data as $k=>$v){
 			// Thumbnail
 			if(isset($v['Thumb']['file'])){
-				$v[$model->name]['thumb'] = $v['Thumb']['file'];
-				$v[$model->name]['thumbf'] = $v['Thumb']['filef'];
+				$v[$model->name]['thumb'] = '/img/'.$v['Thumb']['file'];
+				$v[$model->name]['thumbf'] = '/img/'.$v['Thumb']['filef'];
 			}
 			if(!empty($v['Media'])){
 				$v['Media'] = Set::Combine($v['Media'],'{n}.id','{n}');
