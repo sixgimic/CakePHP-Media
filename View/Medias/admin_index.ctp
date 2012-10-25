@@ -106,9 +106,11 @@ jQuery(function(){
 		max_file_size : '10mb',
 		flash_swf_url : '<?php echo Router::url('/media/js/plupload/plupload.flash.swf'); ?>',
 		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'tinymce'=>$tinymce)); ?>',
-		filters : [
+		/**
+		 * removes files filters
+		 filters : [
 			{title : "Image files", extensions : "jpg,gif,png"},
-		],
+		],*/
 		drop_element : 'droparea',
 		multipart:true,
 		urlstream_upload:true
@@ -186,17 +188,24 @@ jQuery(function(){
 	function insertContent(){
 		var win = window.dialogArugments || opener || parent || top;
 		var item = $(this).parents('.item');
-		var html = '<img src="'+item.find('.file').val()+'"';
-		if( item.find('.alt').val() != '' ){
-			html += ' alt="'+item.find('.alt').val()+'"';
-		}
-		if( item.find('.align:checked').val() != 'none' ){
-			html += ' class="align'+item.find('.align:checked').val()+'"';
-		}
-		html += '>';
-		if( item.find('.href').val() != '' ){
-			html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+html+'</a>';
-		}
+		var displayable = item.find('.displayable').val();
+		
+		if(displayable) {
+
+			var html = '<img src="'+item.find('.file').val()+'"';
+			if( item.find('.alt').val() != '' ){
+				html += ' alt="'+item.find('.alt').val()+'"';
+			}
+			if( item.find('.align:checked').val() != 'none' ){
+				html += ' class="align'+item.find('.align:checked').val()+'"';
+			}
+			html += '>';
+			if( item.find('.href').val() != '' ){
+				html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+html+'</a>';
+			}
+		} else {
+			html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
+		}	
     	win.send_to_editor(html);
     	tinyMCEPopup.close();
 		return false; 
