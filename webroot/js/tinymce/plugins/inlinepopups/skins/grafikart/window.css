@@ -50,9 +50,9 @@
 .grafikart a {width:15px; height:15px; top:3px;}
 .grafikart .mceClose {right:6px; background:url(img/close.png); }
 .grafikart .mceMin {display:none; right:68px; background:url(img/buttons.gif) 0 0}
-.grafikart .mceMed {display:none; right:37px; background:url(img/buttons.gif) -29px 0}
-.grafikart .mceMax {display:none; right:37px; background:url(img/buttons.gif) -58px 0}
-.grafikart .mceMove {display:none;width:100%;cursor:move;background:url(img/corners.gif) no-repeat -100px -100px}
+.grafikart .mceMed {display:none; right:37px; background:url(img/buttons.gif) -29px 0; width: 29px;}
+.grafikart .mceMax {display:none; right:37px; background:url(img/buttons.gif) -58px 0; width: 29px;}
+.grafikart .mceMove {display:none;width:100%;cursor:move;background:url(img/corners.gif) no-repeat -100px -100px; width: 29px;}
 .grafikart .mceMovable .mceMove {display:block}
 
 /* Resize */

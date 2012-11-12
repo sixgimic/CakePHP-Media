@@ -80,13 +80,12 @@
 <?php $this->Html->script('/media/js/plupload.js',array('inline'=>false)); ?>
 <?php $this->Html->script('/media/js/plupload.html5.js',array('inline'=>false)); ?>
 <?php $this->Html->script('/media/js/plupload.flash.js',array('inline'=>false)); ?>
-<?php if($tinymce): ?>
+<?php if($textEditor == 'tinymce'): ?>
 	<?php $this->Html->script('/media/js/tiny_mce_popup.js',array('inline'=>false)); ?>
 <?php endif; ?>
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
 
 jQuery(function(){
-
 	$( "#filelist>form" ).sortable({
 		update:function(){
 			i = 0; 
@@ -103,11 +102,14 @@ jQuery(function(){
 		runtimes : 'html5,flash',
 		container: 'plupload',		
 		browse_button : 'browse',
-		max_file_size : '10mb',
-		flash_swf_url : '<?php echo Router::url('/media/js/plupload/plupload.flash.swf'); ?>',
-		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'tinymce'=>$tinymce)); ?>',
-		filters : [
+		max_file_size : '50mb',
+		flash_swf_url : '<?php echo Router::url('/media/js/plupload.flash.swf'); ?>',
+		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'textEditor'=>$textEditor)); ?>',
+		 filters : [
 			{title : "Image files", extensions : "jpg,gif,png"},
+			{title : "Movie files", extensions : "avi,mov,mkv,mp4,wmv"},
+			{title : "Audio files", extensions : "mp3,wma"},
+			{title : "Zip files",   extensions : "rar,tar.gz,tgz,zip"},
 		],
 		drop_element : 'droparea',
 		multipart:true,
@@ -134,7 +136,11 @@ jQuery(function(){
 		$('#'+file.id).after(response.response);
 		$('#'+file.id).remove();
 	});
-
+	uploader.bind('Error',function(up, err){
+		alert(err.message);
+		$('#droparea').removeClass('dropping');
+		uploader.refresh();
+	});
 	$('#droparea').bind({
        dragover : function(e){
            $(this).addClass('dropping'); 
@@ -179,31 +185,64 @@ jQuery(function(){
 	});
 
 	theFrame.height($(document.body).height() + 50);
-
-	<?php if($tinymce): ?>
-	$('a.submit').live('click',insertContent);
-
-	function insertContent(){
-		var win = window.dialogArugments || opener || parent || top;
-		var item = $(this).parents('.item');
-		var html = '<img src="'+item.find('.file').val()+'"';
-		if( item.find('.alt').val() != '' ){
-			html += ' alt="'+item.find('.alt').val()+'"';
+	
+	<?php if($textEditor): ?>
+		$('a.submit').live('click', function(){
+			var _this = $(this);
+			var html = createHtmlElement(_this);
+			var editor = '<?php echo $textEditor; ?>';
+			if(editor === 'tinymce') {
+				var win = window.dialogArugments || opener || parent || top;
+				win.send_to_editor(html);
+				//tinyMCE.execCommand("mceInsertContent",false,html);
+				tinyMCEPopup.close();
+			}
+			else {
+				var CKEDITOR = window.parent.glob;
+				var editor = CKEDITOR.instances.editor1;
+				var newElement = CKEDITOR.dom.element.createFromHtml(html, editor.document);
+		    	editor.insertElement(newElement);
+		    	CKEDITOR.dialog.getCurrent().hide();
+			}
+			
+			return false;
+		});
+	
+		function createHtmlElement(_this) {
+			var item = _this.parents('.item');
+			var type = item.find('.filetype').val();
+			if(type === 'image') {
+	
+				var html = '<img src="'+item.find('.file').val()+'"';
+				if( item.find('.alt').val() != '' ){
+					html += ' alt="'+item.find('.alt').val()+'"';
+				}
+				if( item.find('.align:checked').val() != 'none' ){
+					html += ' class="align'+item.find('.align:checked').val()+'"';
+				}
+				html += ' />';
+				if( item.find('.href').val() != '' ){
+					html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+html+'</a>';
+				}
+			} else if(type === 'movie') {
+				if( item.find('.tag:checked').val() == 'link' ){
+					var html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
+				} else {
+					var html = '<video src="'+item.find('.file').val()+'" controls="controls"></video>';
+				}
+			} else if(type === 'music') {
+				if( item.find('.tag:checked').val() == 'link' ){
+					var html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
+				} else {
+					var html = '<audio src="'+item.find('.file').val()+'" controls="controls"></audio>';					
+				}
+			} else {
+				html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
+			}
+			return html;
 		}
-		if( item.find('.align:checked').val() != 'none' ){
-			html += ' class="align'+item.find('.align:checked').val()+'"';
-		}
-		html += '>';
-		if( item.find('.href').val() != '' ){
-			html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+html+'</a>';
-		}
-    	win.send_to_editor(html);
-    	tinyMCEPopup.close();
-		return false; 
-	}
+	
 	<?php endif; ?>
-
-
 });
 
 <?php $this->Html->scriptEnd(); ?>

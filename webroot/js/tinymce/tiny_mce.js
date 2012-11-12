@@ -2,7 +2,7 @@
 
 
 jQuery(function($){
-	var buttons = "bold,italic,underline,strikethrough,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,justifyfull,|,link,unlink,image,|,formatselect,code,ibrowser";
+	var buttons = "code,|,bold,italic,underline,strikethrough,|,formatselect,|,bullist,numlist,|,justifyleft,justifycenter,justifyright,justifyfull,|,link,unlink,|,image,|,codehighlighting";
 	if( $('#explorer').length == 0 ){
 		buttons = buttons.replace('image,','');
 	}
@@ -12,10 +12,11 @@ jQuery(function($){
 	    editor_selector : 'wysiwyg',
 	    // General options
 	    theme : "advanced",
-	    skin  : "wp_theme",
+	    skin  : "prbaron",
 	    inlinepopups_skin : 'grafikart',
-	    plugins : "directionality,fullscreen,inlinepopups,image,paste,advlink",
-
+	    plugins : "directionality,fullscreen,inlinepopups,image,paste,advlink, codehighlighting",
+	    extended_valid_elements : "video[*],audio[*],a[*]",
+	    
 	    // Theme options
 	    theme_advanced_buttons1 : buttons,
 	    theme_advanced_buttons2 : "",
@@ -25,23 +26,24 @@ jQuery(function($){
 	    theme_advanced_toolbar_align : "left",
 	    theme_advanced_statusbar_location : "bottom",
 	    theme_advanced_resizing : true,
-	    relative_urls:false, 
-	    remove_script_host:false, 
-	    convert_urls:false, 
-	    apply_source_formatting:false, 
+	    relative_urls:false,
+	    remove_script_host:false,
+	    convert_urls:false,
+	    apply_source_formatting:false,
 	    remove_linebreaks:true,
-	    gecko_spellcheck:true, 
+	    gecko_spellcheck:true,
 	    keep_styles:false,
-	    entities:"38,amp,60,lt,62,gt", 
-	    accessibility_focus:true, 
-	    tabfocus_elements:"major-publishing-actions", 
-	    media_strict:false, 
-	    paste_remove_styles:true, 
-	    paste_remove_spans:true, 
-	    paste_strip_class_attributes:"all", 
-	    paste_text_use_dialog:true,                
+	    entities:"38,amp,60,lt,62,gt",
+	    accessibility_focus:true,
+	    tabfocus_elements:"major-publishing-actions",
+	    media_strict:false,
+	    paste_remove_styles:true,
+	    paste_remove_spans:true,
+	    paste_strip_class_attributes:"all",
+	    paste_text_use_dialog:true,
 	    image_explorer : $('#explorer').val(),
 	    image_edit : $('#explorer').val(),
+	    content_css : '/css/style.css',
 	    relative_urls : false,
 	});
 
@@ -50,5 +52,5 @@ jQuery(function($){
 
 function send_to_editor(content){
     var ed = tinyMCE.activeEditor;
-    ed.execCommand('mceInsertContent',false,content); 
+    ed.execCommand('mceInsertContent',false,content);
 }

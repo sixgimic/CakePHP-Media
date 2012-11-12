@@ -6,18 +6,34 @@ class UploaderHelper extends AppHelper{
 
 	public function tinymce($field){
 		$model = $this->Form->_models; $model = key($model);
-		$this->javascript();
+		$this->javascript('tinymce');
         $html = $this->Form->input($field,array('label'=>false,'class'=>'wysiwyg','style'=>'width:100%;height:500px','row' => 160, 'type' => 'textarea'));
     	if(isset($this->request->data[$model]['id'])){
-			$html .= '<input type="hidden" id="explorer" value="'.$this->Html->url('/admin/media/medias/index/'.$model.'/'.$this->request->data[$model]['id']).'/tinymce:1">';
+			$html .= '<input type="hidden" id="explorer" value="'.$this->Html->url('/admin/media/medias/index/'.$model.'/'.$this->request->data[$model]['id']).'/textEditor:tinymce">';
     	}
 		return $html;
 	}
 
-	private function javascript(){
-		if($this->javascript){ return false; }
-		$this->javascript = true;
-		$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
+	public function ckeditor($field) {
+		$model = $this->Form->_models; $model = key($model);
+		$this->javascript('ckeditor');
+        $html = $this->Form->input($field,array('label'=>false,'class'=>'','style'=>'width:100%;height:500px','row' => 160, 'type' => 'textarea', 'id' => 'editor1'));
+        if(isset($this->request->data[$model]['id'])){
+			$html .= '<input type="hidden" id="explorer" value="'.$this->Html->url('/admin/media/medias/index/'.$model.'/'.$this->request->data[$model]['id']).'/textEditor:ckeditor">';
+    	}
+		return $html;
+	}
+
+	private function javascript($library){
+		switch($library) {
+			case 'tinymce' :
+				$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
+				break;
+			case 'ckeditor' :
+				$this->Html->script('/media/js/ckeditor/ckeditor.js',array('inline'=>false));
+
+				break;
+		}
 	}
 
 	public function iframe($ref,$ref_id){

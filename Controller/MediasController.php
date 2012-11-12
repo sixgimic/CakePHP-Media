@@ -10,7 +10,7 @@ class MediasController extends AppController{
             $this->Security->validatePost = false;
             $this->Security->csrfCheck = false;
         }
-        $this->layout = 'uploader';
+       $this->layout = 'uploader';
     }
 
     function blocked(){
@@ -71,12 +71,14 @@ class MediasController extends AppController{
             'conditions' => array('ref_id' => $ref_id,'ref' => $ref)
         )); 
         $d['medias'] = $medias;
-        $d['tinymce']= isset($this->request->params['named']['tinymce']); 
+          
         $d['thumbID'] = false;
         if($this->$ref->hasField('media_id')){
             $this->$ref->id = $ref_id; 
             $d['thumbID'] = $this->$ref->field('media_id');
         }
+        $d['textEditor'] = isset($this->request->params['named']['textEditor']) ? $this->request->params['named']['textEditor'] : false;
+        
         $this->set($d);
     }
 
@@ -91,8 +93,10 @@ class MediasController extends AppController{
         ));
         $this->loadModel($ref); 
         $d['v'] = current($this->Media->read());
-        $d['tinymce']= isset($this->request->params['named']['tinymce']); 
         $d['thumbID'] = $this->$ref->hasField('media_id');
+        
+        $d['textEditor'] = isset($this->request->params['named']['textEditor']) ? $this->request->params['named']['textEditor'] : false;
+
         $this->set($d);
         $this->layout = false; 
         $render = $this->render('admin_media'); 
