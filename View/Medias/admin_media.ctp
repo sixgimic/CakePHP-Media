@@ -3,23 +3,23 @@
 	<input type="hidden" value="<?php echo $v['position']; ?>" name="data[Media][<?php echo $v['id']; ?>]">
 	
 	
-	<div class="visu"><?php echo $this->Html->image($v['displayable'] ? $v['file'] : 'Media.file.png') ?></div>
+	<div class="visu"><?php echo $this->Html->image('Media.'.$v['icon']); ?></div>
 	<?php echo basename($v['file']); ?>
 	
-	<?php if($v['displayable']) : ?>
+	<?php if($v['type'] == 'image') : ?>
 		<div class="actions">
-			<?php if($thumbID !== false && $v['id'] !== $thumbID): ?>
+			<?php if($thumbID !== false && $v['id'] !== $thumbID && $v['type'] == 'image'): ?>
 				<?php echo $this->Html->link("Mettre en image à la une",array('action'=>'thumb',$v['id'])); ?> -
 			<?php endif; ?>
 			<?php echo $this->Html->link("Supprimer",array('action'=>'delete',$v['id']),array('class'=>'del')); ?> 
-			<?php if ($tinymce): ?>
+			<?php if ($textEditor): ?>
 				- <a href="#" class="toggle">Afficher</a>
 			<?php endif ?>
 		</div>
 		<div class="expand">
 			<table>
 				<tr>
-					<td style="width:140px"><?php echo $this->Html->image($v['file']) ?></td>
+					<td style="width:140px"><?php echo $this->Html->image($v['file']);?></td>
 					<td>
 						<p><strong>Nom du fichier :</strong> <?php echo basename($v['file']); ?></p>
 						<p><strong>Taille de l'image :</strong> <?php echo $sizes[0].'x'.$sizes[1]; ?></p>
@@ -56,7 +56,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td style="width:140px"> &nbsp; <input type="hidden" class="displayable" name="displayable" value="<?php echo $v['displayable']; ?>" /></td>
+					<td style="width:140px"><input type="hidden" class="filetype" name="filetype" value="<?php echo $v['type']; ?>" /></td>
 					<td>
 						<p><a href="" class="submit">Insérer dans l'article</a> <?php echo $this->Html->link("Supprimer",array('action'=>'delete',$v['id']),array('class'=>'del')); ?></p>
 					</td>
@@ -64,17 +64,17 @@
 				<input type="hidden" name="file" value="<?php echo $this->Html->url('/img/'.$v['file']); ?>" class="file">
 			</table>
 		</div>
-	<?php else : ?>
+	<?php elseif($v['type'] == 'zip') : ?>
 		<div class="actions">
 			<?php echo $this->Html->link("Supprimer",array('action'=>'delete',$v['id']),array('class'=>'del')); ?> 
-			<?php if ($tinymce): ?>
+			<?php if($textEditor): ?>
 				- <a href="#" class="toggle">Afficher</a>
 			<?php endif ?>
 		</div>
 		<div class="expand">
 			<table>
 				<tr>
-					<td style="width:140px;"><?php echo $this->Html->image('Media.file.png') ?></td>
+					<td style="width:140px;"><?php echo $this->Html->image('Media.'.$v['icon']) ?></td>
 					<td>
 						<p><strong>Nom du fichier :</strong> <?php echo basename($v['file']); ?></p>
 						<p><strong>Taille du fichier :</strong> 
@@ -92,7 +92,50 @@
 					</td>
 				</tr>
 				<tr>
-					<td style="width:140px"> &nbsp; <input type="hidden" class="displayable" name="displayable" value="<?php echo $v['displayable']; ?>" /></td>
+					<td style="width:140px"><input type="hidden" class="filetype" name="filetype" value="<?php echo $v['type']; ?>" /></td>
+					<td>
+						<p><a href="" class="submit">Insérer dans l'article</a> <?php echo $this->Html->link("Supprimer",array('action'=>'delete',$v['id']),array('class'=>'del')); ?></p>
+					</td>
+				</tr>
+				<input type="hidden" name="file" value="<?php echo $this->Html->url('/img/'.$v['file']); ?>" class="file">
+			</table>
+		</div>
+	<?php else : ?>
+		<div class="actions">
+			<?php echo $this->Html->link("Supprimer",array('action'=>'delete',$v['id']),array('class'=>'del')); ?> 
+			<?php if($textEditor): ?>
+				- <a href="#" class="toggle">Afficher</a>
+			<?php endif ?>
+		</div>
+		<div class="expand">
+			<table>
+				<tr>
+					<td style="width:140px;"><?php echo $this->Html->image('Media.'.$v['icon']) ?></td>
+					<td>
+						<p><strong>Nom du fichier :</strong> <?php echo basename($v['file']); ?></p>
+						<p><strong>Taille du fichier :</strong> 
+						<?php echo round(filesize('img/'.$v['file'])/1000000, 3) . " Mo"; ?></p>
+					</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td style="width:140px"><label>Code</label></td>
+					<td>
+						<input type="radio" name="tag-<?php echo $v['id']; ?>" class="tag" id="tag-media-<?php echo $v['id']; ?>" value="tag" checked><label for="tag-media-<?php echo $v['id']; ?>">Balise</label>
+						<input type="radio" name="tag-<?php echo $v['id']; ?>" class="tag" id="tag-link-<?php echo $v['id']; ?>" value="link"><label for="tag-link-<?php echo $v['id']; ?>">Lien</label>
+					</td>
+				</tr>
+				<tr>
+					<td style="width:140px"><label>Texte du lien</label></td>
+					<td>
+						<input class="title" name="title" type="text">
+						<input class="href" name="href" type="hidden" value="<?php echo Router::url('/img/'.$v['file'], true); ?>">
+						
+					</td>
+				</tr>	
+				<tr>
+					<td style="width:140px"><input type="hidden" class="filetype" name="filetype" value="<?php echo $v['type']; ?>" /></td>
 					<td>
 						<p><a href="" class="submit">Insérer dans l'article</a> <?php echo $this->Html->link("Supprimer",array('action'=>'delete',$v['id']),array('class'=>'del')); ?></p>
 					</td>

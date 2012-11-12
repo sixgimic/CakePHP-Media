@@ -3,6 +3,11 @@ class Media extends AppModel{
 	
 	public $useTable = 'medias';
 	public $order    = 'position ASC';
+	
+	private $IMAGES_EXT = array("jpg","gif","png");
+	private $MOVIES_EXT = array("avi","mov","mkv","mp4","wmv");
+	private $MUSIC_EXT = array("mp3","wma");
+	private $ZIP_EXT = array("rar","tar.gz","tgz","zip");
 
 	function beforeDelete($cascade = true){
 		$file = $this->field('file');
@@ -20,14 +25,21 @@ class Media extends AppModel{
 			$v = current($v);
 			if(isset($v['file'])){
 				$data[$k][$i]['filef'] = substr($v['file'],0,-4).'_%dx%d.jpg';
+				$extension = strtolower(end(explode('.', $v['file'])));
+				if(in_array($extension, $this->IMAGES_EXT)){
+					$data[$k][$i]['type'] = 'image';
+					$data[$k][$i]['icon'] = 'picture.png';
+				} elseif(in_array($extension, $this->MOVIES_EXT)) {
+					$data[$k][$i]['type'] = 'movie';
+					$data[$k][$i]['icon'] = 'film.png';
+				}  elseif(in_array($extension, $this->MUSIC_EXT)) {
+					$data[$k][$i]['type'] = 'music';
+					$data[$k][$i]['icon'] = 'music.png';
+				}  elseif(in_array($extension, $this->ZIP_EXT)) {
+					$data[$k][$i]['type'] = 'zip';
+					$data[$k][$i]['icon'] = 'file_extension_zip.png';
+				}
 			}
-			
-			$extension = strtolower(end(explode('.', $v['file'])));
-			if(in_array($extension, array('jpg', 'jpeg', 'png', 'bmp', 'psd'))){
-				$data[$k][$i]['displayable'] = true;
-			} else {
-				$data[$k][$i]['displayable'] = false;
-			}			
 		}
 		return $data; 
 	}

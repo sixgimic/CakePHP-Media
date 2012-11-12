@@ -15,7 +15,8 @@ jQuery(function($){
 	    skin  : "prbaron",
 	    inlinepopups_skin : 'grafikart',
 	    plugins : "directionality,fullscreen,inlinepopups,image,paste,advlink, codehighlighting",
-
+	    extended_valid_elements : "video[*],audio[*],a[*]",
+	    
 	    // Theme options
 	    theme_advanced_buttons1 : buttons,
 	    theme_advanced_buttons2 : "",
