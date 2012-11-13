@@ -25,10 +25,11 @@ class MediasController extends AppController{
             die();
         }
         extract($this->request->params);
-        $file = str_replace('.','',$file);
-        $size = explode('x',$format);
-        $images = glob(IMAGES.$file.'.*');
-        $dest = IMAGES.$file.'_'.$format.'.jpg';
+        $file = trim($file, '/');
+        $file = str_replace('.', '', $file);
+        $size = explode('x', $format);
+        $images = glob(WWW_ROOT.$file.'.*');
+        $dest = WWW_ROOT.$file.'_'.$format.'.jpg';
         if(empty($images)){
             die();
         }else{
