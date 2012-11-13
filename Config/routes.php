@@ -1,7 +1,7 @@
 <?php
 if(Configure::read('Media.formats')){
 	foreach(Configure::read('Media.formats') as $file => $formats){
-		Router::connect('/img/:file_:format.jpg', array('controller' => 'medias', 'action' => 'crop', 'plugin' => 'media' ),array(
+		Router::connect(':file_:format.jpg', array('controller' => 'medias', 'action' => 'crop', 'plugin' => 'media' ),array(
 		  'file' => $file,
 		  'format' => implode('|', $formats)
 		));

@@ -53,7 +53,7 @@
 		    <div id="droparea" href="#">
 		    	<p>Déplacer les fichiers ici</p>
 		    	ou<br/>
-		    	<a id="browse" href="#">Parcourir</a> 
+		    	<a id="browse" href="#">Parcourir</a>
 		    </div>
 		</div>
 		<table class="head" cellspacing="0">
@@ -67,7 +67,7 @@
 		</table>
 		<div id="filelist">
 			<?php echo $this->Form->create('Media',array('url'=>array('controller'=>'medias','action'=>'order'))); ?>
-			<?php foreach($medias as $v): $v = current($v);  ?>
+			<?php foreach($medias as $media): $media = current($media);  ?>
 				<?php require('admin_media.ctp'); ?>
 			<?php endforeach; ?>
 			<?php echo $this->Form->end(); ?>
@@ -80,31 +80,29 @@
 <?php $this->Html->script('/media/js/plupload.js',array('inline'=>false)); ?>
 <?php $this->Html->script('/media/js/plupload.html5.js',array('inline'=>false)); ?>
 <?php $this->Html->script('/media/js/plupload.flash.js',array('inline'=>false)); ?>
-<?php if($textEditor == 'tinymce'): ?>
-	<?php $this->Html->script('/media/js/tiny_mce_popup.js',array('inline'=>false)); ?>
-<?php endif; ?>
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
 
 jQuery(function(){
 	$( "#filelist>form" ).sortable({
 		update:function(){
-			i = 0; 
+			i = 0;
 			$('#filelist>form>div').each(function(){
 				i++;
-				$(this).find('input').val(i); 
+				$(this).find('input').val(i);
 			});
-			$('#MediaAdminIndexForm').ajaxSubmit(); 
+			$('#MediaAdminIndexForm').ajaxSubmit();
 		}
 	});
-	
-	var theFrame = $("#medias<?php echo $ref; ?>", parent.document.body);
+
+	var theFrame = $("#medias<?php echo $id; ?>", parent.document.body);
+	console.log(theFrame);
 	var uploader = new plupload.Uploader({
 		runtimes : 'html5,flash',
-		container: 'plupload',		
+		container: 'plupload',
 		browse_button : 'browse',
 		max_file_size : '50mb',
 		flash_swf_url : '<?php echo Router::url('/media/js/plupload.flash.swf'); ?>',
-		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'textEditor'=>$textEditor)); ?>',
+		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'editor'=>$editor,'?' => "id=$id")); ?>',
 		 filters : [
 			{title : "Image files", extensions : "jpg,gif,png"},
 			{title : "Movie files", extensions : "avi,mov,mkv,mp4,wmv"},
@@ -123,8 +121,8 @@ jQuery(function(){
 			$('#filelist>form').prepend('<div class="item" id="' + files[i].id + '">' + files[i].name + ' (' + plupload.formatSize(files[i].size) + ') <div class="progressbar"><div class="progress"></div></div></div>');
 		}
 		uploader.start();
-		$('#droparea').removeClass('dropping'); 
-		theFrame.css({ height:$('body').height() + 40 }); 
+		$('#droparea').removeClass('dropping');
+		theFrame.css({ height:$('body').height() + 40 });
 
 	});
 
@@ -143,22 +141,22 @@ jQuery(function(){
 	});
 	$('#droparea').bind({
        dragover : function(e){
-           $(this).addClass('dropping'); 
+           $(this).addClass('dropping');
        },
        dragleave : function(e){
-           $(this).removeClass('dropping'); 
+           $(this).removeClass('dropping');
        }
 	});
 
 	$('a.del').live('click',function(e){
-		e.preventDefault(); 
-		elem = $(this); 
+		e.preventDefault();
+		elem = $(this);
 		if(confirm('Voulez vous vraiment supprimer ce média ?')){
 			$.post(elem.attr('href'),{},function(data){
 				elem.parents('.item').slideUp();
 			});
 		}
-		theFrame.animate({ height:theFrame.height() - 40 }); 
+		theFrame.animate({ height:theFrame.height() - 40 });
 	});
 
 	$('a.toggle').live('click',function(e){
@@ -185,63 +183,39 @@ jQuery(function(){
 	});
 
 	theFrame.height($(document.body).height() + 50);
-	
-	<?php if($textEditor): ?>
+
+	<?php if($editor): ?>
 		$('a.submit').live('click', function(){
-			var _this = $(this);
-			var html = createHtmlElement(_this);
-			var editor = '<?php echo $textEditor; ?>';
-			if(editor === 'tinymce') {
-				var win = window.dialogArugments || opener || parent || top;
-				win.send_to_editor(html);
-				//tinyMCE.execCommand("mceInsertContent",false,html);
-				tinyMCEPopup.close();
-			}
-			else {
-				var CKEDITOR = window.parent.glob;
-				var editor = CKEDITOR.instances.editor1;
-				var newElement = CKEDITOR.dom.element.createFromHtml(html, editor.document);
-		    	editor.insertElement(newElement);
-		    	CKEDITOR.dialog.getCurrent().hide();
-			}
-			
+			var $this = $(this);
+			var html = createHtmlElement($this);
+			var editor = '<?php echo $editor; ?>';
+			var win = window.dialogArugments || opener || parent || top;
+			win.send_to_<?php echo $editor; ?>(html, window, "<?= $id; ?>");
 			return false;
 		});
-	
-		function createHtmlElement(_this) {
-			var item = _this.parents('.item');
-			var type = item.find('.filetype').val();
-			if(type === 'image') {
-	
-				var html = '<img src="'+item.find('.file').val()+'"';
-				if( item.find('.alt').val() != '' ){
-					html += ' alt="'+item.find('.alt').val()+'"';
+
+		function createHtmlElement($this) {
+			var item = $this.parents('.item');
+			var type = $('.filetype', item).val();
+			if(type === 'pic') {
+
+				var html = '<img src="'+$('.file', item).val()+'"';
+				if( $('.alt', item).val() != '' ){
+					html += ' alt="'+$('.alt', item).val()+'"';
 				}
-				if( item.find('.align:checked').val() != 'none' ){
-					html += ' class="align'+item.find('.align:checked').val()+'"';
+				if( $('.align:checked', item).val() != 'none' ){
+					html += ' class="align'+$('.align:checked', item).val()+'"';
 				}
 				html += ' />';
-				if( item.find('.href').val() != '' ){
-					html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+html+'</a>';
-				}
-			} else if(type === 'movie') {
-				if( item.find('.tag:checked').val() == 'link' ){
-					var html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
-				} else {
-					var html = '<video src="'+item.find('.file').val()+'" controls="controls"></video>';
-				}
-			} else if(type === 'music') {
-				if( item.find('.tag:checked').val() == 'link' ){
-					var html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
-				} else {
-					var html = '<audio src="'+item.find('.file').val()+'" controls="controls"></audio>';					
+				if( $('.href', item).val() != '' ){
+					html = '<a href="'+$('.href', item).val()+'" title="'+$('.title', item).val()+'">'+html+'</a>';
 				}
 			} else {
-				html = '<a href="'+item.find('.href').val()+'" title="'+item.find('.title').val()+'">'+item.find('.title').val()+'</a>';
+				html = '<a href="'+$('.href', item).val()+'" title="'+$('.title', item).val()+'">' + $('.title', item).val() + '</a>';
 			}
 			return html;
 		}
-	
+
 	<?php endif; ?>
 });
 

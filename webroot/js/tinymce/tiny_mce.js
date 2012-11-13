@@ -6,51 +6,54 @@ jQuery(function($){
 	if( $('#explorer').length == 0 ){
 		buttons = buttons.replace('image,','');
 	}
-	tinyMCE.init({
+	$('textarea.tinymce').each(function(){
+		tinyMCE.init({
+			mode : 'specific_textareas',
+		    editor_selector : 'tinymce',
 
-		mode : 'specific_textareas',
-	    editor_selector : 'wysiwyg',
-	    // General options
-	    theme : "advanced",
-	    skin  : "prbaron",
-	    inlinepopups_skin : 'grafikart',
-	    plugins : "directionality,fullscreen,inlinepopups,image,paste,advlink, codehighlighting",
-	    extended_valid_elements : "video[*],audio[*],a[*]",
-	    
-	    // Theme options
-	    theme_advanced_buttons1 : buttons,
-	    theme_advanced_buttons2 : "",
-	    theme_advanced_buttons3 : "",
-	    theme_advanced_buttons4 : "",
-	    theme_advanced_toolbar_location : "top",
-	    theme_advanced_toolbar_align : "left",
-	    theme_advanced_statusbar_location : "bottom",
-	    theme_advanced_resizing : true,
-	    relative_urls:false,
-	    remove_script_host:false,
-	    convert_urls:false,
-	    apply_source_formatting:false,
-	    remove_linebreaks:true,
-	    gecko_spellcheck:true,
-	    keep_styles:false,
-	    entities:"38,amp,60,lt,62,gt",
-	    accessibility_focus:true,
-	    tabfocus_elements:"major-publishing-actions",
-	    media_strict:false,
-	    paste_remove_styles:true,
-	    paste_remove_spans:true,
-	    paste_strip_class_attributes:"all",
-	    paste_text_use_dialog:true,
-	    image_explorer : $('#explorer').val(),
-	    image_edit : $('#explorer').val(),
-	    content_css : '/css/style.css',
-	    relative_urls : false,
-	});
+		    // General options
+		    theme : "advanced",
+		    skin  : "prbaron",
+		    inlinepopups_skin : 'grafikart',
+		    plugins : "directionality,fullscreen,inlinepopups,image,paste,advlink, codehighlighting",
+		    extended_valid_elements : "video[*],audio[*],a[*]",
+
+		    // Theme options
+		    theme_advanced_buttons1 : buttons,
+		    theme_advanced_buttons2 : "",
+		    theme_advanced_buttons3 : "",
+		    theme_advanced_buttons4 : "",
+		    theme_advanced_toolbar_location : "top",
+		    theme_advanced_toolbar_align : "left",
+		    theme_advanced_statusbar_location : "bottom",
+		    theme_advanced_resizing : true,
+		    relative_urls:false,
+		    remove_script_host:false,
+		    convert_urls:false,
+		    apply_source_formatting:false,
+		    remove_linebreaks:true,
+		    gecko_spellcheck:true,
+		    keep_styles:false,
+		    entities:"38,amp,60,lt,62,gt",
+		    accessibility_focus:true,
+		    tabfocus_elements:"major-publishing-actions",
+		    media_strict:false,
+		    paste_remove_styles:true,
+		    paste_remove_spans:true,
+		    paste_strip_class_attributes:"all",
+		    paste_text_use_dialog:true,
+		    image_explorer : $('#explorer').val() + '/editor:tinymce?id=' + $(this).attr('id'),
+		    image_edit : $('#explorer').val() + '/editor:tinymce?id=' + $(this).attr('id'),
+		    content_css : '/css/style.css',
+		    relative_urls : false,
+		});
+	})
 
 });
 
 
-function send_to_editor(content){
+function send_to_tinymce(content, win){
     var ed = tinyMCE.activeEditor;
-    ed.execCommand('mceInsertContent',false,content);
+    ed.execCommand('mceInsertContent', false, content);
+    ed.windowManager.close(win);
 }
