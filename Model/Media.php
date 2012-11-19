@@ -7,7 +7,7 @@ class Media extends AppModel{
 	// Allowed extensions and associated type
 	private $exts = array(
 		"jpg" => "pic",
-		"gig" => "pic",
+		"gif" => "pic",
 		"png" => "pic",
 		"avi" => "movie",
 		"mov" => "movie",
