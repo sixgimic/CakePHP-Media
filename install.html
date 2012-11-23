@@ -9,23 +9,23 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <link href='http://fonts.googleapis.com/css?family=PT+Sans|Kreon' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />    
+    <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />
   </head>
 
 
   <body>
-    
+
   	<div id="root">
       <header class="header">
         <a href="http://jonathan-boyer.fr/" class="logo">
           <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />        </a>
         <nav>
-          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>          
-          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>          
-          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>         
-          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>          
-          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>          
-          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>        
+          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>
+          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>
+          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>
+          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>
+          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>
+          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>
         </nav>
       </header>
 
@@ -45,7 +45,11 @@
 
       <p>Ensuite il vous faut charger le plugin, pour cela dans votre fichier bootstrap.php vous pouvez décommenter la ligne</p>
 
-      <pre>CakePlugin::loadAll();</pre>
+      <pre>CakePlugin::loadAll(array(
+  ...
+  'Media' => array('routes' => true),
+  ...
+));</pre>
 
       <p>Voila ! le plugin est bien chargé vous pouvez maintenant importer la base de donnée qui va permettre de gérer les différents médias. Pour cela il faut utiliser la console de CakePHP et utiliser la commande</p>
 

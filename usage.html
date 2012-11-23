@@ -78,9 +78,13 @@ class Post extends AppModel{
 
       <pre>&lt;?php echo $this->Uploader->iframe('MODEL',ID); ?></pre>
 
-      <p>Ou au sain d'un formulaire ($this->Form->create()) vous pouvez créer un champs utilisant tinyMCE, cette méthode prend les même paramètre que la méthode <a href="http://api20.cakephp.org/class/form-helper#method-FormHelperinput">FormHelper::input</a>.</p>
+      <p>Ou au sain d'un formulaire ($this->Form->create()) vous pouvez créer un champs utilisant tinyMCE, CKEditor et Redactor.js, cette méthode prend les même paramètre que la méthode <a href="http://api20.cakephp.org/class/form-helper#method-FormHelperinput">FormHelper::input</a>. </p>
 
-      <pre>&lt;?php echo $this->Uploader->tinymce($fieldName, $options = array ( )); ?></pre>
+      <pre>&lt;?php
+echo $this->Uploader->tinymce($fieldName, $options = array ( ));
+echo $this->Uploader->ckeditor($fieldName, $options = array ( ));
+echo $this->Uploader->redactor($fieldName, $options = array ( ));
+      ?></pre>
 
       <h2 id="redim">Redimensionnement</h2>
 
@@ -90,17 +94,13 @@ class Post extends AppModel{
 
       <pre>&lt;?php echo $this->Html->image(sprintf($post['thumbf']),200,300); ?></pre>
 
-      <p>Ceci permet d'obtenir une url d'image se terminant par _[largeur]x[hauteur].jpg, pour la générer on peut utiliser les routes.</p>
+      <p>Ceci permet d'obtenir une url d'image se terminant par _[largeur]x[hauteur].jpg, pour la générer on peut utiliser le fichier bootstrap.php de votre application.</p>
 
-      <pre>Router::connect('/img/:file_:format.jpg', array('controller' => 'medias', 'action' => 'crop', 'plugin' => 'media' ),array(
-  'file' => 'uploads\/[0-9]{4}\/[0-9]{2}\/[^\/]+',
-  'format' => '200x300|200x150'
+      <pre>Configure::write('Media.formats', array(
+  'regexp rule to image file' => array('format','format','format')
+  '/uploads/[0-9]{4}/[0-9]{1,2}/[^\/]+' => array('206x101','680x380'),
+  ....
 ));</pre>
-
-      <ul>
-        <li><strong>file</strong> est une expression régulière indiquant le nom du fichier par rapport au dossier img (sans l'extension)</li>
-        <li><strong>format</strong> inque les différents formats accepté par votre application</li>
-      </ul>
 
       <p>&nbsp;</p>
 
