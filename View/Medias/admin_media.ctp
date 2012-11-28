@@ -8,7 +8,7 @@
 		<?php echo basename($media['file']); ?>
 
 		<div class="actions">
-			<?php if($thumbID !== false && $media['id'] !== $thumbID && $media['type'] == 'image'): ?>
+			<?php if($thumbID !== false && $media['id'] !== $thumbID && $media['type'] == 'pic'): ?>
 				<?php echo $this->Html->link("Mettre en image à la une",array('action'=>'thumb',$media['id'])); ?> -
 			<?php endif; ?>
 			<?php echo $this->Html->link("Supprimer",array('action'=>'delete',$media['id']),array('class'=>'del')); ?>
