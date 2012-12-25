@@ -50,7 +50,6 @@ class MediaBehavior extends ModelBehavior{
 			// Thumbnail
 			if(isset($v['Thumb']['file'])){
 				$v[$model->name]['thumb'] = $v['Thumb']['file'];
-				$v[$model->name]['thumbf'] = $v['Thumb']['filef'];
 			}
 			if(!empty($v['Media'])){
 				$v['Media'] = Set::Combine($v['Media'],'{n}.id','{n}');
@@ -58,7 +57,6 @@ class MediaBehavior extends ModelBehavior{
 			if( !empty($v[$model->name]['media_id']) && isset($v['Media'][$v[$model->name]['media_id']]) ){
 				$media_id = $v[$model->name]['media_id'];
 				$v[$model->name]['thumb'] = $v['Media'][$media_id]['file'];
-				$v[$model->name]['thumbf'] = $v['Media'][$media_id]['filef'];
 			}
 			$results[$k] = $v;
 		}

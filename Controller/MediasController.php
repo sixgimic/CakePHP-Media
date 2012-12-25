@@ -13,58 +13,6 @@ class MediasController extends AppController{
        $this->layout = 'uploader';
     }
 
-    function blocked(){
-        throw new NotFoundException();
-    }
-
-    /**
-    * Permet de cropper les images
-    **/
-    function crop(){
-        if(!isset( $this->request->params['file'])){
-            die();
-        }
-        extract($this->request->params);
-        $file = trim($file, '/');
-        $file = str_replace('.', '', $file);
-        $size = explode('x', $format);
-        $images = glob(WWW_ROOT.$file.'.*');
-        $dest = WWW_ROOT.$file.'_'.$format.'.jpg';
-        if(empty($images)){
-            die();
-        }else{
-            $image = current($images);
-        }
-        if($this->Img->redim($image,$dest,$size[0],$size[1])){
-            header("Content-type: image/jpg");
-            echo file_get_contents($dest);
-            exit();
-        }
-    }
-
-    /**
-    * Liste les médias
-    **/
-    function admin_index($ref,$ref_id){
-        $this->loadModel($ref);
-        $d['ref'] = $ref;
-        $d['ref_id'] = $ref_id;
-        $d['id'] = isset($this->request->query['id']) ? $this->request->query['id'] : false;
-        $medias = $this->Media->find('all',array(
-            'conditions' => array('ref_id' => $ref_id,'ref' => $ref)
-        ));
-        $d['medias'] = $medias;
-
-        $d['thumbID'] = false;
-        if($this->$ref->hasField('media_id')){
-            $this->$ref->id = $ref_id;
-            $d['thumbID'] = $this->$ref->field('media_id');
-        }
-        $d['editor'] = isset($this->request->params['named']['editor']) ? $this->request->params['named']['editor'] : false;
-
-        $this->set($d);
-    }
-
     /**
     * Upload (Ajax)
     **/
