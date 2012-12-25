@@ -1,9 +1,25 @@
 <?php
-class UploaderHelper extends AppHelper{
+class MediaHelper extends AppHelper{
 
-	var $helpers = array('Html','Form');
-	var $javascript = false;
-	var $explorer = false;
+	public $helpers = array('Html','Form');
+	public $javascript = false;
+	public $explorer = false;
+
+	public function crop($image, $width, $height, $options = array()){
+		$this->pluginDir = dirname(dirname(dirname(__FILE__)));
+		$pathinfo = pathinfo($image);
+		$dest = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_' . $width . 'x' . $height . '.jpg';
+		$image_file = WWW_ROOT . trim($image, '/');
+		$dest_file = WWW_ROOT . trim($dest, '/');
+		require_once($this->pluginDir . DS . 'Vendor' . DS . 'php-image-magician' . DS . 'php_image_magician.php');
+		if (!file_exists($dest_file)) {
+			$magician = new imageLib($image_file);
+			$magician->resizeImage($width, $height, 'crop');
+			$magician->saveImage($dest_file);
+		}
+		return $this->Html->image($dest, $options);
+
+	}
 
 	public function tinymce($field){
 		$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
