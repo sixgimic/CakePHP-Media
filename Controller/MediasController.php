@@ -1,7 +1,6 @@
 <?php
 class MediasController extends AppController{
 
-    public $components = array('Media.Img');
     public $order = array('Media.position ASC');
 
     function beforeFilter(){
@@ -11,6 +10,29 @@ class MediasController extends AppController{
             $this->Security->csrfCheck = false;
         }
        $this->layout = 'uploader';
+    }
+
+    /**
+    * Liste les médias
+    **/
+    function admin_index($ref,$ref_id){
+        $this->loadModel($ref);
+        $d['ref'] = $ref;
+        $d['ref_id'] = $ref_id;
+        $d['id'] = isset($this->request->query['id']) ? $this->request->query['id'] : false;
+        $medias = $this->Media->find('all',array(
+            'conditions' => array('ref_id' => $ref_id,'ref' => $ref)
+        ));
+        $d['medias'] = $medias;
+
+        $d['thumbID'] = false;
+        if($this->$ref->hasField('media_id')){
+            $this->$ref->id = $ref_id;
+            $d['thumbID'] = $this->$ref->field('media_id');
+        }
+        $d['editor'] = isset($this->request->params['named']['editor']) ? $this->request->params['named']['editor'] : false;
+
+        $this->set($d);
     }
 
     /**
