@@ -94,8 +94,7 @@ jQuery(function(){
 		}
 	});
 
-	var theFrame = $("#medias<?php echo $id; ?>", parent.document.body);
-	console.log(theFrame);
+	var theFrame = $("#medias-<?php echo $ref; ?>-<?php echo $ref_id; ?>", parent.document.body);
 	var uploader = new plupload.Uploader({
 		runtimes : 'html5,flash',
 		container: 'plupload',
