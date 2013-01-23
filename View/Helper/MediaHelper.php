@@ -5,20 +5,23 @@ class MediaHelper extends AppHelper{
 	public $javascript = false;
 	public $explorer = false;
 
-	public function crop($image, $width, $height, $options = array()){
+	public function resize($image, $width, $height, $options = array()){
+		return $this->Html->image($this->resizedUrl($image, $width, $height), $options);
+	}
+
+	public function resizedUrl($image, $width, $height){
 		$this->pluginDir = dirname(dirname(dirname(__FILE__)));
 		$pathinfo = pathinfo($image);
 		$dest = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_' . $width . 'x' . $height . '.jpg';
 		$image_file = WWW_ROOT . trim($image, '/');
 		$dest_file = WWW_ROOT . trim($dest, '/');
-		require_once($this->pluginDir . DS . 'Vendor' . DS . 'php-image-magician' . DS . 'php_image_magician.php');
-		if (!file_exists($dest_file)) {
-			$magician = new imageLib($image_file);
-			$magician->resizeImage($width, $height, 'crop');
-			$magician->saveImage($dest_file);
-		}
-		return $this->Html->image($dest, $options);
 
+		if (!file_exists($dest_file)) {
+			require_once APP . 'Plugin' . DS . 'Media' . DS . 'Vendor' . DS . 'imagine.phar';
+			$imagine = new Imagine\Gd\Imagine();
+			$imagine->open($image_file)->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
+		}
+		return '/' . $dest;
 	}
 
 	public function tinymce($field){

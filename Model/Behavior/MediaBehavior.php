@@ -2,7 +2,7 @@
 class MediaBehavior extends ModelBehavior{
 
 	private $options = array(
-		'path'    => 'uploads/%y/%m/%f',
+		'path'    => 'img/uploads/%y/%m/%f',
 		'formats' => false
 	);
 
