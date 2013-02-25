@@ -19,7 +19,8 @@ class Media extends AppModel{
 		"zip" => "zip",
 		"tar.gz"=> "zip",
 		"tgz" => "zip",
-		"rar" => "zip"
+		"rar" => "zip",
+		"pdf" => "pdf"
 	);
 
 	function beforeDelete($cascade = true){

@@ -41,7 +41,7 @@
 				</tr>
 				<tr>
 					<td style="width:140px"><label>Cible du lien</label></td>
-					<td><input class="href" name="href" type="text" value="<?php echo $media['file']; ?>"></td>
+					<td><input class="href" name="href" type="text" value="<?php echo $this->Html->url($media['file']); ?>"></td>
 				</tr>
 				<tr>
 					<td style="width:140px"><label>Alignement</label></td>

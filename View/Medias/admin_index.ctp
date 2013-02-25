@@ -106,6 +106,7 @@ jQuery(function(){
 			{title : "Image files", extensions : "jpg,gif,png"},
 			{title : "Movie files", extensions : "avi,mov,mkv,mp4,wmv"},
 			{title : "Audio files", extensions : "mp3,wma"},
+			{title : "PDF files", extensions : "pdf"},
 			{title : "Zip files",   extensions : "rar,tar.gz,tgz,zip"},
 		],
 		drop_element : 'droparea',
