@@ -6,6 +6,8 @@ class MediaHelper extends AppHelper{
 	public $explorer = false;
 
 	public function resize($image, $width, $height, $options = array()){
+		$options['width'] = $width;
+		$options['height'] = $height;
 		return $this->Html->image($this->resizedUrl($image, $width, $height), $options);
 	}
 
@@ -19,7 +21,11 @@ class MediaHelper extends AppHelper{
 		if (!file_exists($dest_file)) {
 			require_once APP . 'Plugin' . DS . 'Media' . DS . 'Vendor' . DS . 'imagine.phar';
 			$imagine = new Imagine\Gd\Imagine();
-			$imagine->open($image_file)->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
+			try{
+				$imagine->open($image_file)->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
+			} catch (Imagine\Exception\Exception $e) {
+				return '/img/error.jpg';
+			}
 		}
 		return '/' . $dest;
 	}
