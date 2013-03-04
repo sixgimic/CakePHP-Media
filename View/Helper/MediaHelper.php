@@ -30,26 +30,27 @@ class MediaHelper extends AppHelper{
 		return '/' . $dest;
 	}
 
-	public function tinymce($field){
+	public function tinymce($field, $options){
 		$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
-		return $this->textarea($field, 'tinymce');
+		return $this->textarea($field, 'tinymce', $options);
 	}
 
-	public function ckeditor($field) {
+	public function ckeditor($field, $options) {
 		$model = $this->Form->_models; $model = key($model);
 		$this->Html->script('/media/js/ckeditor/ckeditor.js',array('inline'=>false));
-		return $this->textarea($field, 'ckeditor');
+		return $this->textarea($field, 'ckeditor', $options);
 	}
 
-	public function redactor($field) {
+	public function redactor($field, $options) {
 		$model = $this->Form->_models; $model = key($model);
 		$this->Html->script('/media/js/redactor/redactor.min.js',array('inline'=>false));
 		$this->Html->css('/Media/js/redactor/redactor.css', null, array('inline'=>false));
-		return $this->textarea($field, 'redactor');
+		return $this->textarea($field, 'redactor', $options);
 	}
 
-	public function textarea($field, $editor = false){
-		$html = $this->Form->input($field,array('label'=>false,'style'=>'width:100%;height:500px','row' => 160, 'type' => 'textarea', 'class' => "wysiwyg $editor"));
+	public function textarea($field, $editor = false, $options = array()){
+		$options = array_merge(array('label'=>false,'style'=>'width:100%;height:500px','row' => 160, 'type' => 'textarea', 'class' => "wysiwyg $editor"), $options);
+		$html = $this->Form->input($field, $options);
 		$models = $this->Form->_models;
 		$model = key($models);
         if(isset($this->request->data[$model]['id']) && !$this->explorer){
