@@ -4,7 +4,7 @@ console.log(editor);
 	return {
 		title : 'Insérer un medium',
 		minWidth : 1000,
-		minHeight : 600,
+		minHeight : 500,
  
 		contents :
 		[
@@ -15,10 +15,9 @@ console.log(editor);
 				elements :
 				[ {
 					type   : 'iframe',
-					src    : 'http://www.google.com',
 					width  : '100%',
-					height : '100%',
-					//src    : editor.config.grafikartPath,
+					height : '500px',
+					src    : editor.config.grafikartPath,
 				} ]
 			},
 		]
