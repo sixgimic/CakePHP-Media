@@ -43,7 +43,7 @@ class Media extends AppModel{
 			$ref = $this->data['Media']['ref'];
 			$model = ClassRegistry::init($ref);
         	if(!in_array('Media', $model->Behaviors->loaded())){
-        		throw new CakeException(__("Le model '$ref' n'a pas le comportement 'Media'"));
+        		throw new CakeException(__d('media',"Le model '%s' n'a pas le comportement 'Media'", $ref));
         	}
 		}
 		if( isset($this->data['Media']['file']) && is_array($this->data['Media']['file']) && isset($this->data['Media']['ref']) ){
@@ -53,7 +53,7 @@ class Media extends AppModel{
 			$pathinfo 	= pathinfo($this->data['Media']['file']['name']);
 			$extension  = strtolower($pathinfo['extension']) == 'jpeg' ? 'jpg' : $pathinfo['extension'];
 			if(!in_array($extension, $model->medias['extensions'])){
-				$this->error = __('Vous ne pouvez pas uploader ce type de fichier (%s seulement)', implode(', ', $model->medias['extensions']));
+				$this->error = __d('media','Vous ne pouvez pas uploader ce type de fichier (%s seulement)', implode(', ', $model->medias['extensions']));
 				return false;
 			}
 			$filename 	= Inflector::slug($pathinfo['filename'],'-');

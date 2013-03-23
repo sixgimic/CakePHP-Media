@@ -6,25 +6,25 @@
 					<tr>
 						<td style="width:140px"><img src="<?php echo $_GET['src']; ?>"></td>
 						<td>
-							<p><strong>Nom du fichier :</strong> <?php echo basename($_GET['src']); ?></p>
+							<p><strong><?php echo __d('media',"Nom du fichier"); ?> :</strong> <?php echo basename($_GET['src']); ?></p>
 						</td>
 					</tr>
 				</table>
 				<table>
 					<tr>
-						<td style="width:140px"><label>Titre</label></td>
+						<td style="width:140px"><label><?php echo __d('media',"Titre"); ?></label></td>
 						<td><input class="title" name="title" type="text"></td>
 					</tr>
 					<tr>
-						<td style="width:140px"><label>Texte alternatif</label></td>
+						<td style="width:140px"><label><?php echo __d('media',"Texte alternatif"); ?></label></td>
 						<td><input class="alt" name="alt" type="text" value="<?php echo $_GET['alt']; ?>"></td>
 					</tr>
 					<tr>
-						<td style="width:140px"><label>Cible du lien</label></td>
+						<td style="width:140px"><label><?php echo __d('media',"Cible du lien"); ?></label></td>
 						<td><input class="href" name="href" type="text"></td>
 					</tr>
 					<tr>
-						<td style="width:140px"><label>Alignement</label></td>
+						<td style="width:140px"><label><?php echo __d('media',"Alignement"); ?></label></td>
 						<td>
 							<input type="radio" name="align" class="align" id="align-none-up" value="none" <?php if($_GET['class'] == '') echo 'checked'; ?>>
 							<?php echo $this->Html->image('/media/img/align-none.png'); ?><label for="align-none-up">Aucun</label>
@@ -42,7 +42,7 @@
 					<tr>
 						<td style="width:140px"> &nbsp; </td>
 						<td>
-							<p><a href="" class="submit">Insérer dans l'article</a>
+							<p><a href="" class="submit"><?php echo __d('media',"Insérer dans l'article"); ?></a>
 						</td>
 					</tr>
 					<input type="hidden" name="file" value="<?php echo $_GET['src']; ?>" class="file">
@@ -51,18 +51,18 @@
 		<?php endif; ?>
 		<div id="plupload">
 		    <div id="droparea" href="#">
-		    	<p>Déplacer les fichiers ici</p>
-		    	ou<br/>
-		    	<a id="browse" href="#">Parcourir</a>
-		    	<p class="small">(<?php echo implode(', ', $extensions); ?> seulement)</p>
+		    	<p><?php echo __d('media',"Déplacer les fichiers ici"); ?></p>
+		    	<?php echo __d('media',"ou"); ?><br/>
+		    	<a id="browse" href="#"><?php echo __d('media',"Parcourir"); ?></a>
+		    	<p class="small">(<?php echo __d('media','%s seulement',implode(', ', $extensions)); ?>)</p>
 		    </div>
 		</div>
 		<table class="head" cellspacing="0">
 			<thead>
 				<tr>
-					<th style="width:55%">Médias</th>
-					<th style="width:20%">Ordre</th>
-					<th style="width:25%">Actions</th>
+					<th style="width:55%"><?php echo __d('media',"Médias"); ?></th>
+					<th style="width:20%"> &nbsp; </th>
+					<th style="width:25%"><?php echo __d('media',"Actions"); ?></th>
 				</tr>
 			</thead>
 		</table>
@@ -153,7 +153,7 @@ jQuery(function(){
 	$('a.del').live('click',function(e){
 		e.preventDefault();
 		elem = $(this);
-		if(confirm('Voulez vous vraiment supprimer ce média ?')){
+		if(confirm('<?php echo __d('media',"Voulez vous vraiment supprimer ce média ?"); ?>')){
 			$.post(elem.attr('href'),{},function(data){
 				elem.parents('.item').slideUp();
 			});
@@ -192,7 +192,7 @@ jQuery(function(){
 			var html = createHtmlElement($this);
 			var editor = '<?php echo $editor; ?>';
 			var win = window.dialogArugments || opener || parent || top;
-			win.send_to_<?php echo $editor; ?>(html, window, "<?= $id; ?>");
+			win.send_to_<?php echo $editor; ?>(html, window, "<?php echo $id; ?>");
 			return false;
 		});
 

@@ -9,14 +9,14 @@
 
 		<div class="actions">
 			<?php if($thumbID !== false && $media['id'] !== $thumbID && $media['type'] == 'pic'): ?>
-				<?php echo $this->Html->link("Mettre en image à la une",array('action'=>'thumb',$media['id'])); ?> -
+				<?php echo $this->Html->link(__d("media", "Mettre en image à la une"),array('action'=>'thumb',$media['id'])); ?> -
 			<?php endif; ?>
-			<?php echo $this->Html->link("Supprimer",array('action'=>'delete',$media['id']),array('class'=>'del')); ?>
+			<?php echo $this->Html->link(__d('media',"Supprimer"),array('action'=>'delete',$media['id']),array('class'=>'del')); ?>
 			<?php if ($editor): ?>
 				<?php if ($media['type'] != 'pic'): ?>
-					- <a href="" class="submit">Insérer le lien l'article</a>
+					- <a href="" class="submit"><?php __d('media',"Insérer le lien l'article"); ?></a>
 				<?php else: ?>
-					- <a href="#" class="toggle">Afficher</a>
+					- <a href="#" class="toggle"><?php __d('media',"Afficher"); ?></a>
 				<?php endif ?>
 			<?php endif ?>
 		</div>
@@ -25,26 +25,26 @@
 				<tr>
 					<td style="width:140px"><?php echo $this->Html->image($media['file']);?></td>
 					<td>
-						<p><strong>Nom du fichier :</strong> <?php echo basename($media['file']); ?></p>
-						<p><strong>Taille de l'image :</strong> <?php echo $sizes[0].'x'.$sizes[1]; ?></p>
+						<p><strong><?php __d('media',"Nom du fichier"); ?> :</strong> <?php echo basename($media['file']); ?></p>
+						<p><strong><?php __d('media',"Taille de l'image"); ?> :</strong> <?php echo $sizes[0].'x'.$sizes[1]; ?></p>
 					</td>
 				</tr>
 			</table>
 			<table>
 				<tr>
-					<td style="width:140px"><label>Titre</label></td>
+					<td style="width:140px"><label><?php __d('media',"Titre"); ?></label></td>
 					<td><input class="title" name="title" type="text" value="<?php echo basename($media['file']); ?>"></td>
 				</tr>
 				<tr>
-					<td style="width:140px"><label>Texte alternatif</label></td>
+					<td style="width:140px"><label><?php __d('media',"Texte alternatif"); ?></label></td>
 					<td><input class="alt" name="alt" type="text"></td>
 				</tr>
 				<tr>
-					<td style="width:140px"><label>Cible du lien</label></td>
+					<td style="width:140px"><label><?php __d('media',"Cible du lien"); ?></label></td>
 					<td><input class="href" name="href" type="text" value="<?php echo $this->Html->url($media['file']); ?>"></td>
 				</tr>
 				<tr>
-					<td style="width:140px"><label>Alignement</label></td>
+					<td style="width:140px"><label><?php __d('media',"Alignement"); ?></label></td>
 					<td>
 						<input type="radio" name="align-<?php echo $media['id']; ?>" class="align" id="align-none-<?php echo $media['id']; ?>" value="none" checked>
 						<?php echo $this->Html->image('/media/img/align-none.png'); ?><label for="align-none-<?php echo $media['id']; ?>">Aucun</label>
@@ -62,7 +62,7 @@
 				<tr>
 					<td style="width:140px"><input type="hidden" class="filetype" name="filetype" value="<?php echo $media['type']; ?>" /></td>
 					<td>
-						<p><a href="" class="submit">Insérer dans l'article</a> <?php echo $this->Html->link("Supprimer",array('action'=>'delete',$media['id']),array('class'=>'del')); ?></p>
+						<p><a href="" class="submit"><?php __d('media',"Insérer dans l'article"); ?></a> <?php echo $this->Html->link("Supprimer",array('action'=>'delete',$media['id']),array('class'=>'del')); ?></p>
 					</td>
 				</tr>
 				<input type="hidden" name="file" value="<?php echo $this->Html->url($media['file']); ?>" class="file">
