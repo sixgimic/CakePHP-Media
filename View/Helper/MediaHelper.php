@@ -42,18 +42,18 @@ class MediaHelper extends AppHelper{
 		return '/' . $dest;
 	}
 
-	public function tinymce($field, $options){
+	public function tinymce($field, $options = array()){
 		$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
 		return $this->textarea($field, 'tinymce', $options);
 	}
 
-	public function ckeditor($field, $options) {
+	public function ckeditor($field, $options = array()) {
 		$model = $this->Form->_models; $model = key($model);
 		$this->Html->script('/media/js/ckeditor/ckeditor.js',array('inline'=>false));
 		return $this->textarea($field, 'ckeditor', $options);
 	}
 
-	public function redactor($field, $options) {
+	public function redactor($field, $options = array()) {
 		$model = $this->Form->_models; $model = key($model);
 		$this->Html->script('/media/js/redactor/redactor.min.js',array('inline'=>false));
 		$this->Html->css('/Media/js/redactor/redactor.css', null, array('inline'=>false));
@@ -66,7 +66,7 @@ class MediaHelper extends AppHelper{
 		$models = $this->Form->_models;
 		$model = key($models);
         if(isset($this->request->data[$model]['id']) && !$this->explorer){
-			$html .= '<input type="hidden" id="explorer" value="' . $this->Html->url('/admin/media/medias/index/'.$model.'/'.$this->request->data[$model]['id']) . '">';
+			$html .= '<input type="hidden" id="explorer" value="' . $this->Html->url('/media/medias/index/'.$model.'/'.$this->request->data[$model]['id']) . '">';
 			$this->explorer = true;
     	}
     	return $html;
