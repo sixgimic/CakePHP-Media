@@ -1,114 +1,131 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <title>Utilisation | CakePHP Media Plugin</title>
-        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans|Kreon' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />
-  </head>
+    <head>
+        <meta charset="utf-8">
+        <title>Utilisation | CakePHP Media Plugin</title>
+                <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans|Kreon' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />
+    </head>
 
 
-  <body>
+    <body>
 
-  	<div id="root">
-      <header class="header">
-        <a href="http://jonathan-boyer.fr/" class="logo">
-          <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />        </a>
-        <nav>
-          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>
-          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>
-          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>
-          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>
-          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>
-          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>
-        </nav>
-      </header>
+    	<div id="root">
+            <header class="header">
+                <a href="http://jonathan-boyer.fr/" class="logo">
+                    <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />                </a>
+                <nav>
+                    <a href="http://jonathan-boyer.fr/" class="">Accueil</a>
+                    <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>
+                    <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>
+                    <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>
+                    <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>
+                    <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>
+                </nav>
+            </header>
 
-      <h1>Plugin Media</h1>
-      <span class="subtitle">Pour CakePHP</span>
+            <h1>Plugin Media</h1>
+            <span class="subtitle">Pour CakePHP</span>
 
-      <nav class="secondary">
-        <a href="index.html">Présentation</a>
-        <a href="install.html">Installation</a>
-        <a href="usage.html" class="active">Utilisation</a>
-      </nav>
+            <nav class="secondary">
+                <a href="index.html">Présentation</a>
+                <a href="install.html">Installation</a>
+                <a href="usage.html" class="active">Utilisation</a>
+            </nav>
 
-      <h2>Le behaviour</h2>
+            <h2>Permissions</h2>
 
-      <p>Pour utiliser le plugin Media vous devez d'abord charger le Behaviour sur vos models. Par exemple si pour mes article je veux pouvoir avec des images liées : </p>
+            <div class="notif warning">
+                Par défaut le plugin est accessible par tout le monde
+                <a href="#" class="close">x</a>
+            </div>
 
-      <pre>&lt;?php
-class Post extends AppModel{
+            <p>Pour définir les permission vous pouvez bloquer les actions du plugin depuis votre appController avec les méthodes par défaut. Pour des permissions plus affinées vous pouvez définir une fonction <strong>canUploadMedias($ref, $ref_id)</strong> dans votre AppController.<br>
+                Par exemple : </p>
 
-  public $actsAs = array(
-    'Containable',
-    'Media.Media' => array(
-      // Ici vous pouvez spécifier des options (facultative)
-      'path' => ''
-    )
-  );
+            <pre>public function canUploadMedias($ref, $ref_id){
+    if($ref == 'User' & $ref_id = $this->Session->read('Auth.User.id')){
+        return true; // Tout le monde peut éditer les médias de son profil
+    }
+    return $this->Session->read('Auth.User.role') == 'admin'; // Le reste des média n'est gérable que par l'administrateur
 }</pre>
 
-      <p>Il est conseillé d'utiliser le Behaviour containable afin d'avoir un contrôle total sur les liaisons qui seront faites à l'avenir (pour les performances essentiellement).</p>
+            <h2>Le behaviour</h2>
 
-      <p>Le behaviour prend plusieurs options (enfin une seul pour le moment mais d'autres arrivent bientôt)</p>
+            <p>Pour utiliser le plugin Media vous devez d'abord charger le Behaviour sur vos models. Par exemple si pour mes article je veux pouvoir avec des images liées : </p>
 
-      <ul>
-        <li><strong>path</strong> <em>"img/uploads/%y/%m/%f"</em> - Permet de définir le chemin ou sera stocké l'image par rapport au dossier app/webroot
-          <ul>
-            <li><strong>%y</strong> Année d'upload de l'image</li>
-            <li><strong>%m</strong> Mois d'upload de l'image</li>
-            <li><strong>%d</strong> Jour d'upload de l'image</li>
-            <li><strong>%f</strong> Nom du fichier uploadé (sans l'extension et avec un Inflector::slug())</li>
-            <li><strong>%id</strong> ID du média</li>
-            <li><strong>%cid</strong> ID du média divisé par 100 et arrondit à l'entier suppérieur</li>
-            <li><strong>%mid</strong> ID du média divisé par 1000 et arrondit à l'entier suppérieur</li>
-          </ul>
-        </li>
-        <li><strong>extensions</strong> <em>array('jpg','png')</em> - Permet de définir les extensions (minuscules) autorisées pour le plugin</li>
-      </ul>
+            <pre>&lt;?php
+class Post extends AppModel{
 
-      <p>Ce behaviour rajoute 2 liaisons à votre model : </p>
+    public $actsAs = array(
+        'Containable',
+        'Media.Media' => array(
+            // Ici vous pouvez spécifier des options (facultative)
+            'path' => ''
+        )
+    );
+}</pre>
 
-      <ul>
-        <li><strong>belongsTo Thumb</strong>, afin de récupérer l'image à la une de votre contenu. Ne fonctionne que si votre table à un champs <strong>media_id</strong></li>
-        <li><strong>hasMany</strong>, permet de récupérer toutes les images liées à un contenu.</li>
-      </ul>
+            <p>Il est conseillé d'utiliser le Behaviour containable afin d'avoir un contrôle total sur les liaisons qui seront faites à l'avenir (pour les performances essentiellement).</p>
 
-      <p>Et plusieurs champs lors d'un AppModel::find() si vous ajoutez la liaison avec le model Thumb</p>
+            <p>Le behaviour prend plusieurs options (enfin une seul pour le moment mais d'autres arrivent bientôt)</p>
 
-      <ul>
-        <li>Un champs "thumb" contenant l'url de l'image à la une sera ajouté aux champs de votre model</li>
-      </ul>
+            <ul>
+                <li><strong>path</strong> <em>"img/uploads/%y/%m/%f"</em> - Permet de définir le chemin ou sera stocké l'image par rapport au dossier app/webroot
+                    <ul>
+                        <li><strong>%y</strong> Année d'upload de l'image</li>
+                        <li><strong>%m</strong> Mois d'upload de l'image</li>
+                        <li><strong>%d</strong> Jour d'upload de l'image</li>
+                        <li><strong>%f</strong> Nom du fichier uploadé (sans l'extension et avec un Inflector::slug())</li>
+                        <li><strong>%id</strong> ID du média</li>
+                        <li><strong>%cid</strong> ID du média divisé par 100 et arrondit à l'entier suppérieur</li>
+                        <li><strong>%mid</strong> ID du média divisé par 1000 et arrondit à l'entier suppérieur</li>
+                    </ul>
+                </li>
+                <li><strong>extensions</strong> <em>array('jpg','png')</em> - Permet de définir les extensions (minuscules) autorisées pour le plugin</li>
+            </ul>
 
-      <h2>Helper</h2>
+            <p>Ce behaviour rajoute 2 liaisons à votre model : </p>
 
-      <p>Maintenant que tout est en place il faut pouvoir ajouter, éditer et supprimer des images. Pour réaliser cela le plugin apporte un helper "Uploader" qui vous permet de générer une interface drag & drop rapidement. Cet helper fonctionne de 2 façon : </p>
+            <ul>
+                <li><strong>belongsTo Thumb</strong>, afin de récupérer l'image à la une de votre contenu. Ne fonctionne que si votre table à un champs <strong>media_id</strong></li>
+                <li><strong>hasMany</strong>, permet de récupérer toutes les images liées à un contenu.</li>
+            </ul>
 
-      <p>Soit vous pouvez créer une iframe vers le gestionnaire de média :</p>
+            <p>Et plusieurs champs lors d'un AppModel::find() si vous ajoutez la liaison avec le model Thumb</p>
 
-      <pre>&lt;?php echo $this->Uploader->iframe('MODEL',ID); ?></pre>
+            <ul>
+                <li>Un champs "thumb" contenant l'url de l'image à la une sera ajouté aux champs de votre model</li>
+            </ul>
 
-      <p>Ou au sain d'un formulaire ($this->Form->create()) vous pouvez créer un champs utilisant tinyMCE, CKEditor et Redactor.js, cette méthode prend les même paramètre que la méthode <a href="http://api20.cakephp.org/class/form-helper#method-FormHelperinput">FormHelper::input</a>. </p>
+            <h2>Helper</h2>
 
-      <pre>&lt;?php
-echo $this->Uploader->tinymce($fieldName, $options = array ( ));
-echo $this->Uploader->ckeditor($fieldName, $options = array ( ));
-echo $this->Uploader->redactor($fieldName, $options = array ( ));
-      ?></pre>
+            <p>Maintenant que tout est en place il faut pouvoir ajouter, éditer et supprimer des images. Pour réaliser cela le plugin apporte un helper "Media" qui vous permet de générer une interface drag & drop rapidement. Cet helper fonctionne de 2 façon : </p>
 
-      <h2 id="redim">Redimensionnement</h2>
+            <p>Soit vous pouvez créer une iframe vers le gestionnaire de média :</p>
 
-      <p>Maintenant que vous avez vos outils pour ajouter et récupérer les images il est temps de les afficher et de les redimensionner. Cela se fait encore depuis le helper Media</p>
+            <pre>&lt;?php echo $this->Media->iframe('MODEL',ID); ?></pre>
 
-      <p>Par exemple si je veux une version 150x150 de l'image webroot/img/test.jpg</p>
+            <p>Ou au sain d'un formulaire ($this->Form->create()) vous pouvez créer un champs utilisant tinyMCE, CKEditor et Redactor.js, cette méthode prend les même paramètre que la méthode <a href="http://api20.cakephp.org/class/form-helper#method-FormHelperinput">FormHelper::input</a>. </p>
 
-      <pre>&lt;?php echo $this->Media->resize('/img/test.png', 150, 150, array('class' => 'avatar')); ?>
+            <pre>&lt;?php
+echo $this->Media->tinymce($fieldName, $options = array ( ));
+echo $this->Media->ckeditor($fieldName, $options = array ( ));
+echo $this->Media->redactor($fieldName, $options = array ( ));
+            ?></pre>
+
+            <h2 id="redim">Redimensionnement</h2>
+
+            <p>Maintenant que vous avez vos outils pour ajouter et récupérer les images il est temps de les afficher et de les redimensionner. Cela se fait encore depuis le helper Media</p>
+
+            <p>Par exemple si je veux une version 150x150 de l'image webroot/img/test.jpg</p>
+
+            <pre>&lt;?php echo $this->Media->resize('/img/test.png', 150, 150, array('class' => 'avatar')); ?>
 
 // génèrera le code suivant
 &lt;img src="/img/test_150x150.jpg" width="150" height="150" class="avatar"&gt;
@@ -117,13 +134,13 @@ echo $this->Uploader->redactor($fieldName, $options = array ( ));
 &lt;?php echo $this->Media->resizedUrl('/img/test.png', 150, 150); ?>
 </pre>
 
-      <p><strong>Important :</strong> L'image redimensionné est sauvegardée sur votre disque, assurez vous donc que les permissions sont bien paramétrées.</p>
+            <p><strong>Important :</strong> L'image redimensionné est sauvegardée sur votre disque, assurez vous donc que les permissions sont bien paramétrées.</p>
 
-      <p>&nbsp;</p>
+            <p>&nbsp;</p>
 
 
-      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-      <script type="text/javascript" src="http://jonathan-boyer.fr/js/min.js"></script>
+            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+            <script type="text/javascript" src="http://jonathan-boyer.fr/js/min.js"></script>
 
 </footer>
 </body>
