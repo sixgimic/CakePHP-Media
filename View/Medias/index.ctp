@@ -83,6 +83,7 @@
 <?php $this->Html->script('/media/js/plupload.flash.js',array('inline'=>false)); ?>
 <?php $this->Html->scriptStart(array('inline'=>false)); ?>
 
+
 jQuery(function(){
 	$( "#filelist>form" ).sortable({
 		update:function(){

@@ -1,11 +1,19 @@
+var myEditorForMedia = null;
+var myEditorDialog = null;
+
+function send_to_ckeditor(content, win){
+    myEditorForMedia.insertHtml(content);
+	CKEDITOR.dialog.getCurrent().hide()
+}
+
 CKEDITOR.dialog.add('grafikart', function(editor)
 {
-console.log(editor);
+	myEditorForMedia = editor;
 	return {
-		title : 'Insérer un medium',
+		title : 'Insérer un média',
 		minWidth : 1000,
-		minHeight : 600,
- 
+		minHeight : 500,
+		buttons : [],
 		contents :
 		[
 			{
@@ -15,10 +23,9 @@ console.log(editor);
 				elements :
 				[ {
 					type   : 'iframe',
-					src    : 'http://www.google.com',
 					width  : '100%',
-					height : '100%',
-					//src    : editor.config.grafikartPath,
+					height : '500px',
+					src    : $('#explorer').val() + '/editor:ckeditor',
 				} ]
 			},
 		]
