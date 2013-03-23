@@ -45,11 +45,11 @@
 
       <p>Ensuite il vous faut charger le plugin, pour cela dans votre fichier bootstrap.php vous pouvez décommenter la ligne</p>
 
-      <pre>CakePlugin::loadAll(array(
-  ...
-  'Media' => array('routes' => true),
-  ...
-));</pre>
+      <pre>CakePlugin::loadAll();
+
+// Ou utiliser
+CakePlugin::load('Media');
+</pre>
 
       <p>Voila ! le plugin est bien chargé vous pouvez maintenant importer la base de donnée qui va permettre de gérer les différents médias. Pour cela il faut utiliser la console de CakePHP et utiliser la commande</p>
 

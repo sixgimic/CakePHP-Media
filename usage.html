@@ -49,12 +49,30 @@ class Post extends AppModel{
   public $actsAs = array(
     'Containable',
     'Media.Media' => array(
-      // Ici vous pouvez spécifier des options
+      // Ici vous pouvez spécifier des options (facultative)
+      'path' => ''
     )
   );
 }</pre>
 
-      <p>Il est conseillé d'utiliser le Behaviour containable afin d'avoir un contrôle total sur les liaisons qui seront faites à l'avenir (pour des raisons de performances essentiellement.</p>
+      <p>Il est conseillé d'utiliser le Behaviour containable afin d'avoir un contrôle total sur les liaisons qui seront faites à l'avenir (pour les performances essentiellement).</p>
+
+      <p>Le behaviour prend plusieurs options (enfin une seul pour le moment mais d'autres arrivent bientôt)</p>
+
+      <ul>
+        <li><strong>path</strong> <em>"img/uploads/%y/%m/%f"</em> - Permet de définir le chemin ou sera stocké l'image par rapport au dossier app/webroot
+          <ul>
+            <li><strong>%y</strong> Année d'upload de l'image</li>
+            <li><strong>%m</strong> Mois d'upload de l'image</li>
+            <li><strong>%d</strong> Jour d'upload de l'image</li>
+            <li><strong>%f</strong> Nom du fichier uploadé (sans l'extension et avec un Inflector::slug())</li>
+            <li><strong>%id</strong> ID du média</li>
+            <li><strong>%cid</strong> ID du média divisé par 100 et arrondit à l'entier suppérieur</li>
+            <li><strong>%mid</strong> ID du média divisé par 1000 et arrondit à l'entier suppérieur</li>
+          </ul>
+        </li>
+        <li><strong>extensions</strong> <em>array('jpg','png')</em> - Permet de définir les extensions (minuscules) autorisées pour le plugin</li>
+      </ul>
 
       <p>Ce behaviour rajoute 2 liaisons à votre model : </p>
 
@@ -67,12 +85,11 @@ class Post extends AppModel{
 
       <ul>
         <li>Un champs "thumb" contenant l'url de l'image à la une sera ajouté aux champs de votre model</li>
-        <li>Un champs "thumbf" contenant l'url de l'image <a href="#redim">redimensionnable</a></li>
       </ul>
 
       <h2>Helper</h2>
 
-      <p>Maintenant que tout est en place il faut pouvoir ajouter, éditer et supprimer des images. Pour réaliser cela le plugin apporte un helper "Uploader" qui vous permet de générer une interface drag & drop rapidement pour gérer les médias. Cet helper fonctionne de 2 façon : </p>
+      <p>Maintenant que tout est en place il faut pouvoir ajouter, éditer et supprimer des images. Pour réaliser cela le plugin apporte un helper "Uploader" qui vous permet de générer une interface drag & drop rapidement. Cet helper fonctionne de 2 façon : </p>
 
       <p>Soit vous pouvez créer une iframe vers le gestionnaire de média :</p>
 
@@ -88,19 +105,20 @@ echo $this->Uploader->redactor($fieldName, $options = array ( ));
 
       <h2 id="redim">Redimensionnement</h2>
 
-      <p>Maintenant que vous avez vos outils pour ajouter et récupérer les images il est temps de les afficher et de les redimensionner. Pour ce plugin j'ai pris le parti de ne pas gérer l'upload à l'envois mais plutôt à l'affichage. Lorsque quelqu'un demande une image d'un certain format elle est généré.</p>
+      <p>Maintenant que vous avez vos outils pour ajouter et récupérer les images il est temps de les afficher et de les redimensionner. Cela se fait encore depuis le helper Media</p>
 
-      <p>Par exemple je récupère l'image à la une d'un article, j'obtiens donc un champs thumbf</p>
+      <p>Par exemple si je veux une version 150x150 de l'image webroot/img/test.jpg</p>
 
-      <pre>&lt;?php echo $this->Html->image(sprintf($post['thumbf']),200,300); ?></pre>
+      <pre>&lt;?php echo $this->Media->resize('/img/test.png', 150, 150, array('class' => 'avatar')); ?>
 
-      <p>Ceci permet d'obtenir une url d'image se terminant par _[largeur]x[hauteur].jpg, pour la générer on peut utiliser le fichier bootstrap.php de votre application.</p>
+// génèrera le code suivant
+&lt;img src="/img/test_150x150.jpg" width="150" height="150" class="avatar"&gt;
 
-      <pre>Configure::write('Media.formats', array(
-  'regexp rule to image file' => array('format','format','format')
-  '/uploads/[0-9]{4}/[0-9]{1,2}/[^\/]+' => array('206x101','680x380'),
-  ....
-));</pre>
+// Si vous ne souhaitez obtenir que l'url
+&lt;?php echo $this->Media->resizedUrl('/img/test.png', 150, 150); ?>
+</pre>
+
+      <p><strong>Important :</strong> L'image redimensionné est sauvegardée sur votre disque, assurez vous donc que les permissions sont bien paramétrées.</p>
 
       <p>&nbsp;</p>
 
