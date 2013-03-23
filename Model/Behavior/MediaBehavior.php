@@ -3,7 +3,7 @@ class MediaBehavior extends ModelBehavior{
 
 	private $options = array(
 		'path'    => 'img/uploads/%y/%m/%f',
-		'formats' => false
+		'extensions' => array('jpg','png')
 	);
 
 	public function setup(Model $model, $config = array()){

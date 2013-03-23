@@ -54,6 +54,7 @@
 		    	<p>Déplacer les fichiers ici</p>
 		    	ou<br/>
 		    	<a id="browse" href="#">Parcourir</a>
+		    	<p class="small">(<?php echo implode(', ', $extensions); ?> seulement)</p>
 		    </div>
 		</div>
 		<table class="head" cellspacing="0">
@@ -68,7 +69,7 @@
 		<div id="filelist">
 			<?php echo $this->Form->create('Media',array('url'=>array('controller'=>'medias','action'=>'order'))); ?>
 			<?php foreach($medias as $media): $media = current($media);  ?>
-				<?php require('admin_media.ctp'); ?>
+				<?php require('media.ctp'); ?>
 			<?php endforeach; ?>
 			<?php echo $this->Form->end(); ?>
 		</div>
@@ -90,7 +91,7 @@ jQuery(function(){
 				i++;
 				$(this).find('input').val(i);
 			});
-			$('#MediaAdminIndexForm').ajaxSubmit();
+			$('#MediaIndexForm').ajaxSubmit();
 		}
 	});
 
@@ -103,11 +104,7 @@ jQuery(function(){
 		flash_swf_url : '<?php echo Router::url('/media/js/plupload.flash.swf'); ?>',
 		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'editor'=>$editor,'?' => "id=$id")); ?>',
 		 filters : [
-			{title : "Image files", extensions : "jpg,gif,png"},
-			{title : "Movie files", extensions : "avi,mov,mkv,mp4,wmv"},
-			{title : "Audio files", extensions : "mp3,wma"},
-			{title : "PDF files", extensions : "pdf"},
-			{title : "Zip files",   extensions : "rar,tar.gz,tgz,zip"},
+			{title : "Accepted files", extensions : "<?php echo implode(',', $extensions); ?>"},
 		],
 		drop_element : 'droparea',
 		multipart:true,
@@ -118,7 +115,7 @@ jQuery(function(){
 
 	uploader.bind('FilesAdded', function(up, files) {
 		for (var i in files) {
-			$('#filelist>form').prepend('<div class="item" id="' + files[i].id + '">' + files[i].name + ' (' + plupload.formatSize(files[i].size) + ') <div class="progressbar"><div class="progress"></div></div></div>');
+			$('#filelist>form').prepend('<div class="item" id="' + files[i].id + '">&nbsp; &nbsp;' + files[i].name + ' (' + plupload.formatSize(files[i].size) + ') <div class="progressbar"><div class="progress"></div></div></div>');
 		}
 		uploader.start();
 		$('#droparea').removeClass('dropping');
@@ -131,7 +128,12 @@ jQuery(function(){
 	});
 
 	uploader.bind('FileUploaded', function(up, file, response){
-		$('#'+file.id).after(response.response);
+		var response = jQuery.parseJSON(response.response);
+		if(response.error){
+			alert(response.error)
+		}else{
+			$('#'+file.id).before(response.content);
+		}
 		$('#'+file.id).remove();
 	});
 	uploader.bind('Error',function(up, err){

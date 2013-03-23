@@ -5,6 +5,7 @@ class MediaHelper extends AppHelper{
 	public $javascript = false;
 	public $explorer = false;
 
+
 	public function resize($image, $width, $height, $options = array()){
 		$options['width'] = $width;
 		$options['height'] = $height;
@@ -13,18 +14,29 @@ class MediaHelper extends AppHelper{
 
 	public function resizedUrl($image, $width, $height){
 		$this->pluginDir = dirname(dirname(dirname(__FILE__)));
+		$image = trim($image, '/');
 		$pathinfo = pathinfo($image);
-		$dest = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '_' . $width . 'x' . $height . '.jpg';
-		$image_file = WWW_ROOT . trim($image, '/');
-		$dest_file = WWW_ROOT . trim($dest, '/');
+		$dest = sprintf(str_replace(".{$pathinfo['extension']}", '_%sx%s.jpg', $image), $width, $height);
+		$image_file = WWW_ROOT . $image;
+		$dest_file = WWW_ROOT . $dest;
 
+		// On a déjà le fichier redimensionné ?
 		if (!file_exists($dest_file)) {
 			require_once APP . 'Plugin' . DS . 'Media' . DS . 'Vendor' . DS . 'imagine.phar';
 			$imagine = new Imagine\Gd\Imagine();
 			try{
 				$imagine->open($image_file)->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
 			} catch (Imagine\Exception\Exception $e) {
-				return '/img/error.jpg';
+				$alternates = glob(str_replace(".{$pathinfo['extension']}",".*", $image_file));
+				if(empty($alternates)){
+					return '/img/error.jpg';
+				}else{
+					try{
+						$imagine->open($alternates[0])->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
+					} catch (Imagine\Exception\Exception $e) {
+						return '/img/error.jpg';
+					}
+				}
 			}
 		}
 		return '/' . $dest;
@@ -61,6 +73,6 @@ class MediaHelper extends AppHelper{
 	}
 
 	public function iframe($ref,$ref_id){
-		return '<iframe src="'.Router::url('/').'admin/media/medias/index/'.$ref.'/'.$ref_id.'" style="width:100%;" id="medias-' . $ref . '-' . $ref_id . '"></iframe>';
+		return '<iframe src="' . $this->Html->url("/media/medias/index/$ref/$ref_id") . '" style="width:100%;" id="medias-' . $ref . '-' . $ref_id . '"></iframe>';
 	}
 }

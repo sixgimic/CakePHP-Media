@@ -1,11 +1,20 @@
 <?php
+App::uses('AppController','Controller');
 class MediasController extends AppController{
 
     public $order = array('Media.position ASC');
 
-    function beforeFilter(){
+    public function canUploadMedias($ref, $ref_id){
+        if(method_exists('AppController', 'canUploadMedias')){
+            return parent::canUploadMedias($ref, $ref_id);
+        }else{
+            return true;
+        }
+    }
+
+    public function beforeFilter(){
         parent::beforeFilter();
-        if(in_array($this->request->action, array('admin_upload','admin_index','admin_delete')) && array_key_exists('Security', $this->components)){
+        if(in_array($this->request->action, array('upload','index','delete')) && array_key_exists('Security', $this->components)){
             $this->Security->validatePost = false;
             $this->Security->csrfCheck = false;
         }
@@ -15,76 +24,109 @@ class MediasController extends AppController{
     /**
     * Liste les médias
     **/
-    function admin_index($ref,$ref_id){
+    public function index($ref,$ref_id){
+        if(!$this->canUploadMedias($ref, $ref_id)){
+            throw new ForbiddenException();
+        }
         $this->loadModel($ref);
-        $d['ref'] = $ref;
-        $d['ref_id'] = $ref_id;
-        $d['id'] = isset($this->request->query['id']) ? $this->request->query['id'] : false;
+        $this->set(compact('ref', 'ref_id'));
+        if(!in_array('Media', $this->$ref->Behaviors->loaded())){
+            return $this->render('nobehavior');
+        }
+        $id = isset($this->request->query['id']) ? $this->request->query['id'] : false;
         $medias = $this->Media->find('all',array(
             'conditions' => array('ref_id' => $ref_id,'ref' => $ref)
         ));
-        $d['medias'] = $medias;
 
-        $d['thumbID'] = false;
+        $thumbID = false;
         if($this->$ref->hasField('media_id')){
             $this->$ref->id = $ref_id;
-            $d['thumbID'] = $this->$ref->field('media_id');
+            $thumbID = $this->$ref->field('media_id');
         }
-        $d['editor'] = isset($this->request->params['named']['editor']) ? $this->request->params['named']['editor'] : false;
-
-        $this->set($d);
+        $extensions = $this->$ref->medias['extensions'];
+        $editor = isset($this->request->params['named']['editor']) ? $this->request->params['named']['editor'] : false;
+        $this->set(compact('id', 'medias', 'thumbID', 'editor', 'extensions'));
     }
 
     /**
     * Upload (Ajax)
     **/
-    function admin_upload($ref,$ref_id){
-        $this->Media->save(array(
+    public function upload($ref,$ref_id){
+        $this->autoRender = false;
+        if(!$this->canUploadMedias($ref, $ref_id)){
+            throw new ForbiddenException();
+        }
+        $media = $this->Media->save(array(
             'ref'    => $ref,
             'ref_id' => $ref_id,
             'file'   => $_FILES['file']
         ));
+        if(!$media){
+            echo json_encode(array('error' => $this->Media->error));
+            return false;
+        }
         $this->loadModel($ref);
-        $d['media'] = current($this->Media->read());
-        $d['thumbID'] = $this->$ref->hasField('media_id');
-        $d['editor'] = isset($this->request->params['named']['editor']) ? $this->request->params['named']['editor'] : false;
-        $d['id'] = isset($this->request->query['id']) ? $this->request->query['id'] : false;
-
-        $this->set($d);
-        $this->layout = false;
-        $render = $this->render('admin_media');
-        die($render);
+        $media = $this->Media->read();
+        $media = $media['Media'];
+        $thumbID = $this->$ref->hasField('media_id');
+        $editor = isset($this->request->params['named']['editor']) ? $this->request->params['named']['editor'] : false;
+        $id = isset($this->request->query['id']) ? $this->request->query['id'] : false;
+        $this->set(compact('media', 'thumbID', 'editor', 'id'));
+        $this->layout = 'json';
+        $this->render('media');
+        return true;
     }
 
     /**
     * Suppression (Ajax)
     **/
-    function admin_delete($id){
+    public function delete($id){
+        $this->autoRender = false;
+        $media = $this->Media->findById($id, array('ref','ref_id'));
+        if(empty($media)){
+            throw new NotFoundException();
+        }
+        if(!$this->canUploadMedias($media['Media']['ref'], $media['Media']['ref_id'])){
+            throw new ForbiddenException();
+        }
         $this->Media->delete($id);
-        die();
+        return true;
     }
 
     /**
     * Met l'image à la une
     **/
-    function admin_thumb($id){
+    public function thumb($id){
         $this->Media->id = $id;
-        $ref = $this->Media->field('ref');
-        $ref_id = $this->Media->field('ref_id');
+        $media = $this->Media->findById($id, array('ref','ref_id'));
+        if(empty($media)){
+            throw new NotFoundException();
+        }
+        if(!$this->canUploadMedias($media['Media']['ref'], $media['Media']['ref_id'])){
+            throw new ForbiddenException();
+        }
+        $ref = $media['Media']['ref'];
+        $ref_id = $media['Media']['ref_id'];
         $this->loadModel($ref);
         $this->$ref->id = $ref_id;
         $this->$ref->saveField('media_id',$id);
         $this->redirect($this->referer());
     }
 
-    function admin_order(){
+    public function order(){
+        debug($this->request->data);
         if(!empty($this->request->data['Media'])){
+            $id = key($this->request->data['Media']);
+            $media = $this->Media->findById($id, array('ref','ref_id'));
+            if(!$this->canUploadMedias($media['Media']['ref'], $media['Media']['ref_id'])){
+                throw new ForbiddenException();
+            }
             foreach($this->request->data['Media'] as $k=>$v){
                 $this->Media->id = $k;
                 $this->Media->saveField('position',$v);
             }
         }
-        die();
+        return false;
     }
 
 
