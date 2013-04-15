@@ -8,17 +8,16 @@ class MediasController extends AppController{
         if(method_exists('AppController', 'canUploadMedias')){
             return parent::canUploadMedias($ref, $ref_id);
         }else{
-            return true;
+            return false;
         }
     }
 
     public function beforeFilter(){
         parent::beforeFilter();
-        if(in_array($this->request->action, array('upload','index','delete')) && array_key_exists('Security', $this->components)){
-            $this->Security->validatePost = false;
-            $this->Security->csrfCheck = false;
+        $this->layout = 'uploader';
+        if(array_key_exists('Security', $this->components)){
+            $this->Security->unlockedActions = array('upload', 'order','index','delete','thumb');
         }
-       $this->layout = 'uploader';
     }
 
     /**

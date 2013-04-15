@@ -5,8 +5,15 @@ class MediaHelper extends AppHelper{
 	public $javascript = false;
 	public $explorer = false;
 
-
-	public function resize($image, $width, $height, $options = array()){
+	/**
+	 * Generate an image with a specific size
+	 * @param  string 	$image   Path of the image (from the webroot directory)
+	 * @param  int 		$width
+	 * @param  int 		$height
+	 * @param  array  	$options Options (same that HtmlHelper::image)
+	 * @return string 	<img> tag
+	 */
+	public function image($image, $width, $height, $options = array()){
 		$options['width'] = $width;
 		$options['height'] = $height;
 		return $this->Html->image($this->resizedUrl($image, $width, $height), $options);
