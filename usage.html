@@ -117,7 +117,7 @@ class Post extends AppModel{
 echo $this->Media->tinymce($fieldName, $options = array ( ));
 echo $this->Media->ckeditor($fieldName, $options = array ( ));
 echo $this->Media->redactor($fieldName, $options = array ( ));
-            ?></pre>
+?></pre>
 
             <h2 id="redim">Redimensionnement</h2>
 
@@ -134,7 +134,9 @@ echo $this->Media->redactor($fieldName, $options = array ( ));
 &lt;?php echo $this->Media->resizedUrl('/img/test.png', 150, 150); ?>
 </pre>
 
-            <p><strong>Important :</strong> L'image redimensionné est sauvegardée sur votre disque, assurez vous donc que les permissions sont bien paramétrées.</p>
+            <div class="notif warning">
+                <strong>Important :</strong> L'image redimensionnée est sauvegardée sur votre disque, assurez vous donc que les permissions soient bien paramétrées.
+            </div>
 
             <p>&nbsp;</p>
 
