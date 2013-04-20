@@ -15,7 +15,7 @@ class MediasController extends AppController{
     public function beforeFilter(){
         parent::beforeFilter();
         $this->layout = 'uploader';
-        if(array_key_exists('Security', $this->components)){
+        if(in_array('Security', $this->components)){
             $this->Security->unlockedActions = array('upload', 'order','index','delete','thumb');
         }
     }
