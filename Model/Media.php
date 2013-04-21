@@ -19,7 +19,7 @@ class Media extends AppModel{
 
 	public function afterFind($results, $primary = false){
 		foreach($results as $k => $result){
-			if(isset($result[$this->alias])){
+			if(isset($result[$this->alias]) && is_array($result)){
 				$media = $result[$this->alias];
 				if(isset($media['file'])){
 					$pathinfo = pathinfo($media['file']);
