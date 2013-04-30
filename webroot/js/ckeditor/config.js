@@ -10,13 +10,26 @@ CKEDITOR.editorConfig = function( config )
 	config.language = 'fr';
 	// config.uiColor = '#AADC6E';
 	config.height = 500;
-		
+	/*
 	config.toolbarGroups = [
+		{ name: 'styles', groups: ['Format'] },
 		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
 	    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },	
+		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },
 		{ name: 'links' },
-		{ name: 'others' },
+		{ name: 'others' }
+	];
+	*/
+	config.toolbar = [
+		{ name: 'styles', items: [ 'Format' ] },
+		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Strike', '-', 'RemoveFormat' ] },
+		{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+		{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+		{ name: 'insert', items: [ 'Grafikart' ] },
+		{ name: 'tools', items: [ 'Maximize' ] },
+		{ name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source' ] },
+		{ name: 'others', items: [ '-' ] },
+		'/',
 	];
 
 };
