@@ -109,7 +109,7 @@ class MediasController extends AppController{
         $this->loadModel($ref);
         $this->$ref->id = $ref_id;
         $this->$ref->saveField('media_id',$id);
-        $this->redirect($this->referer());
+        $this->redirect(array('action' => 'index', $ref, $ref_id));
     }
 
     public function order(){
