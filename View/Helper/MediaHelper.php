@@ -29,10 +29,11 @@ class MediaHelper extends AppHelper{
 
 		// On a déjà le fichier redimensionné ?
 		if (!file_exists($dest_file)) {
-			require_once APP . 'Plugin' . DS . 'Media' . DS . 'Vendor' . DS . 'imagine.phar';
+			require_once 'phar://' . APP . 'Plugin' . DS . 'Media' . DS . 'Vendor' . DS . 'imagine.phar';
 			$imagine = new Imagine\Gd\Imagine();
 			try{
-				$imagine->open($image_file)->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
+				$angle = $this->__getRotation( $image_file );
+				$imagine->open($image_file)->rotate( $angle )->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
 			} catch (Imagine\Exception\Exception $e) {
 				$alternates = glob(str_replace(".{$pathinfo['extension']}",".*", $image_file));
 				if(empty($alternates)){
@@ -48,6 +49,43 @@ class MediaHelper extends AppHelper{
 		}
 		return '/' . $dest;
 	}
+
+
+	/**
+	 * Check the orientation in order to rotate
+	 * the picture and display it normally. 
+	 * Fix the problem related to picture taken from mobile device (Android, iOS)
+	 * or by camera
+	 *
+	 * @param string $filename Full path to the picture
+	 * @return int $angle Return the rotation level
+	 */
+	private function __getRotation( $filename ){
+		$extension = @end(explode('.', $filename));
+		$angle    = 0;
+		if( $extension == 'jpg' ){
+			$exif   = @exif_read_data( $filename );
+			if(!empty($exif['Orientation'])) {
+	    		switch($exif['Orientation']) {
+	        		case 8:
+	            		$angle = -90;
+	            	break;
+	        		case 3:
+	            		$angle = 180;
+	            	break;
+	        		case 6:
+	            		$angle = 90;
+	            	break;
+	    		}
+			}else if(!empty($exif) && empty($exif['Orientation'])){
+				$angle = 0;
+			}else if(empty($exif)){
+				$angle = 90;
+			}
+		}
+		return $angle;
+	}
+
 
 	public function tinymce($field, $options = array()){
 		$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
