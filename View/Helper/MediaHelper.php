@@ -32,7 +32,8 @@ class MediaHelper extends AppHelper{
 			require_once 'phar://' . APP . 'Plugin' . DS . 'Media' . DS . 'Vendor' . DS . 'imagine.phar';
 			$imagine = new Imagine\Gd\Imagine();
 			try{
-				$angle = $this->__getRotation( $image_file );
+				//$angle = $this->__getRotation( $image_file ); // This method doesn't work for everyone
+				$angle = 0;
 				$imagine->open($image_file)->rotate( $angle )->thumbnail(new Imagine\Image\Box($width, $height), Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND)->save($dest_file, array('quality' => 90));
 			} catch (Imagine\Exception\Exception $e) {
 				$alternates = glob(str_replace(".{$pathinfo['extension']}",".*", $image_file));
@@ -53,7 +54,7 @@ class MediaHelper extends AppHelper{
 
 	/**
 	 * Check the orientation in order to rotate
-	 * the picture and display it normally. 
+	 * the picture and display it normally.
 	 * Fix the problem related to picture taken from mobile device (Android, iOS)
 	 * or by camera
 	 *
