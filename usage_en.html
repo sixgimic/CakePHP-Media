@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>CakePHP Media Plugin</title>
+        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans|Kreon' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="http://jonathan-boyer.fr/css/style.css" />
+  </head>
+
+
+  <body>
+
+    <div id="root">
+      <header class="header">
+        <a href="http://jonathan-boyer.fr/" class="logo">
+          <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />        </a>
+        <nav>
+          <a href="http://jonathan-boyer.fr/" class="">Accueil</a>
+          <a href="http://jonathan-boyer.fr/portfolio" class="">Portfolio</a>
+          <a href="http://jonathan-boyer.fr/projets" class="active">Projets</a>
+          <a href="http://jonathan-boyer.fr/competences" class="">Compétences</a>
+          <a href="http://jonathan-boyer.fr/culture" class="">Culture</a>
+          <a href="http://jonathan-boyer.fr/contact" class="">Contact</a>
+        </nav>
+      </header>
+
+      <h1>Plugin Media</h1>
+      <span class="subtitle">For CakePHP</span>
+
+      <nav class="secondary">
+        <a href="index_en.html">Introduction</a>
+        <a href="install_en.html">Installation</a>
+        <a href="usage_en.html" class="active">Usage</a>
+        <a href="index.html">French</a>
+      </nav>
+
+            <h2>Permissions</h2>
+
+            <div class="notif warning">
+                By default, the plugin is blocked to every users for security purpose
+                <a href="#" class="close">x</a>
+            </div>
+
+            <p>
+                To set proper permissions you can create a method <strong>canUploadMedias($model, $model_id)</strong> in your AppController.<br>
+                For instance :
+            </p>
+
+            <pre>public function canUploadMedias($model, $id){
+    if($model == 'User' & $id = $this->Session->read('Auth.User.id')){
+        return true; // Everyone can edit the medias for their own record
+    }
+    return $this->Session->read('Auth.User.role') == 'admin'; // Only admins can upload medias for everything else
+}</pre>
+
+            <h2>The behavior</h2>
+
+            <p>To use this plugin you first have to load the behavor on your models. For instance, if I want to manage media for my posts : </p>
+
+            <pre>&lt;?php
+class Post extends AppModel{
+
+    public $actsAs = array(
+        'Containable',
+        'Media.Media' => array(
+            // You can set up the path where your medias will be saved (optional)
+            'path' => ''
+        )
+    );
+}</pre>
+
+            <p>You should also used the containable behavior to have a better control on the relations used by your queries (for better performances)</p>
+
+            <p>Behavior parameters</p>
+
+            <ul>
+                <li><strong>path</strong> <em>"img/uploads/%y/%m/%f"</em> - Permet de définir le chemin ou sera stocké l'image par rapport au dossier app/webroot
+                    <ul>
+                        <li><strong>%y</strong> Year</li>
+                        <li><strong>%m</strong> Month</li>
+                        <li><strong>%d</strong> Day</li>
+                        <li><strong>%f</strong> Slugished filename</li>
+                        <li><strong>%id</strong> Media ID</li>
+                        <li><strong>%cid</strong> ID / 100</li>
+                        <li><strong>%mid</strong> ID / 1000</li>
+                    </ul>
+                </li>
+                <li><strong>extensions</strong> <em>array('jpg','png')</em> - Allowed extensions (lowercase)</li>
+            </ul>
+
+            <p>This behavior add 2 relations : </p>
+
+            <ul>
+                <li><strong>belongsTo Thumb</strong>, to get the "highlighted" thumb for your content. Works if your model has a <strong>media_id</strong> field</li>
+                <li><strong>hasMany</strong>, get all files assiociated with your record.</li>
+            </ul>
+
+            <h2>Helper</h2>
+
+            <p>Now since everything is working, we have to be able to add, edit and delete files. To make it works you have a "Media" helper that will create the upload interface.</p>
+
+            <p>You can create an iframe to manage medias</p>
+
+            <pre>&lt;?php echo $this->Media->iframe('MODEL',ID); ?></pre>
+
+            <p>Or if you are inside a form ($this->Form->create()) you can create a textarea field using tinyMCE, CKEditor or Redactor.js, this method take the same parameters than <a href="http://api20.cakephp.org/class/form-helper#method-FormHelperinput">FormHelper::input</a></p>
+
+            <pre>&lt;?php
+echo $this->Media->tinymce($fieldName, $options = array ( ));
+echo $this->Media->ckeditor($fieldName, $options = array ( ));
+echo $this->Media->redactor($fieldName, $options = array ( ));
+?></pre>
+
+            <h2 id="redim">Resizing</h2>
+
+            <p>If you cant to generate a 150x150 thumb for your image inside app/webroot/img/test.jpg</p>
+
+            <pre>&lt;?php echo $this->Media->image('/img/test.png', 150, 150, array('class' => 'avatar')); ?>
+
+// Will output
+&lt;img src="/img/test_150x150.jpg" width="150" height="150" class="avatar"&gt;
+
+// If you only want the URL
+&lt;?php echo $this->Media->resizedUrl('/img/test.png', 150, 150); ?>
+</pre>
+
+            <div class="notif warning">
+                <strong>Important :</strong> The resized image is saved on your system, be sure to have proper permissions.
+            </div>
+
+            <p>&nbsp;</p>
+
+
+            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+            <script type="text/javascript" src="http://jonathan-boyer.fr/js/min.js"></script>
+
+</footer>
+</body>
+</html>

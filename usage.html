@@ -36,20 +36,21 @@
                 <a href="index.html">Présentation</a>
                 <a href="install.html">Installation</a>
                 <a href="usage.html" class="active">Utilisation</a>
+                <a href="index_en.html">English</a>
             </nav>
 
             <h2>Permissions</h2>
 
             <div class="notif warning">
-                Par défaut le plugin est accessible par tout le monde
+                Par défaut le plugin est bloqué pour tout le monde
                 <a href="#" class="close">x</a>
             </div>
 
-            <p>Pour définir les permission vous pouvez bloquer les actions du plugin depuis votre appController avec les méthodes par défaut. Pour des permissions plus affinées vous pouvez définir une fonction <strong>canUploadMedias($ref, $ref_id)</strong> dans votre AppController.<br>
+            <p>Pour définir les permission vous pouvez bloquer les actions du plugin depuis votre appController avec les méthodes par défaut. Pour des permissions plus affinées vous pouvez définir une fonction <strong>canUploadMedias($model, $id)</strong> dans votre AppController.<br>
                 Par exemple : </p>
 
-            <pre>public function canUploadMedias($ref, $ref_id){
-    if($ref == 'User' & $ref_id = $this->Session->read('Auth.User.id')){
+            <pre>public function canUploadMedias($model, $id){
+    if($model == 'User' & $id = $this->Session->read('Auth.User.id')){
         return true; // Tout le monde peut éditer les médias de son profil
     }
     return $this->Session->read('Auth.User.role') == 'admin'; // Le reste des média n'est gérable que par l'administrateur
@@ -125,7 +126,7 @@ echo $this->Media->redactor($fieldName, $options = array ( ));
 
             <p>Par exemple si je veux une version 150x150 de l'image webroot/img/test.jpg</p>
 
-            <pre>&lt;?php echo $this->Media->resize('/img/test.png', 150, 150, array('class' => 'avatar')); ?>
+            <pre>&lt;?php echo $this->Media->image('/img/test.png', 150, 150, array('class' => 'avatar')); ?>
 
 // génèrera le code suivant
 &lt;img src="/img/test_150x150.jpg" width="150" height="150" class="avatar"&gt;

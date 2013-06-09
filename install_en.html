@@ -3,7 +3,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8">
-    <title>Installation | CakePHP Media Plugin</title>
+    <title>CakePHP Media Plugin</title>
         <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,7 +15,7 @@
 
   <body>
 
-  	<div id="root">
+    <div id="root">
       <header class="header">
         <a href="http://jonathan-boyer.fr/" class="logo">
           <img src="http://jonathan-boyer.fr/img/logo.png" alt="" />        </a>
@@ -30,32 +30,32 @@
       </header>
 
       <h1>Plugin Media</h1>
-      <span class="subtitle">Pour CakePHP</span>
+      <span class="subtitle">For CakePHP</span>
 
       <nav class="secondary">
-        <a href="index.html">Présentation</a>
-        <a href="install.html" class="active">Installation</a>
-        <a href="usage.html">Utilisation</a>
-        <a href="index_en.html">English</a>
+        <a href="index_en.html">Introduction</a>
+        <a href="install_en.html" class="active">Installation</a>
+        <a href="usage_en.html">Usage</a>
+        <a href="index.html">French</a>
       </nav>
 
-      <p>La première chose à faire est de copier le plugin Media dans le dossier Plugin de votre application. Pour cela vous pouvez télécharger le .zip ou cloner directement le dépôt</p>
+      <p>The first thing you have to do is download the plugin and put it in your Plugin directory, you can clone it using git if you have git installed</p>
 
       <pre>git clone git@github.com:Grafikart/CakePHP-Media.git Media</pre>
 
-      <p>Ensuite il vous faut charger le plugin, pour cela dans votre fichier bootstrap.php vous pouvez décommenter la ligne</p>
+      <p>After that you have to load the plugin, in your bootstrap.php file you have to uncomment</p>
 
       <pre>CakePlugin::loadAll();
 
-// Ou utiliser
+// Or
 CakePlugin::load('Media');
 </pre>
 
-      <p>Voila ! le plugin est bien chargé vous pouvez maintenant importer la table qui va permettre de gérer les différents médias. Pour cela il faut utiliser la console de CakePHP et utiliser la commande</p>
+      <p>Done ! The plugin is now loaded in your application, you know have to import the table that will save the medias. To do that you have to use CakePHP CLI : </p>
 
       <pre>cake Media.create</pre>
 
-      <p>Et c'est tout vous êtes prêt à utiliser le plugin !</p>
+      <p>And that's all you are ready to go !</p>
 
       <p>&nbsp;</p>
 
