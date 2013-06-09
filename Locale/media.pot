@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2013-03-23 18:11+0000\n"
+"POT-Creation-Date: 2013-06-09 17:18+0000\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -47,6 +47,22 @@ msgstr ""
 msgid "Alignement"
 msgstr ""
 
+#: View/Medias/index.ctp:30
+msgid "Aucun"
+msgstr ""
+
+#: View/Medias/index.ctp:33
+msgid "Gauche"
+msgstr ""
+
+#: View/Medias/index.ctp:36
+msgid "Centre"
+msgstr ""
+
+#: View/Medias/index.ctp:39
+msgid "Droite"
+msgstr ""
+
 #: View/Medias/index.ctp:45
 #: View/Medias/media.ctp:65
 msgid "Insérer dans l'article"
@@ -76,24 +92,29 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: View/Medias/index.ctp:156
+#: View/Medias/index.ctp:157
 msgid "Voulez vous vraiment supprimer ce média ?"
+msgstr ""
+
+#: View/Medias/index.ctp:169;178
+#: View/Medias/media.ctp:19
+msgid "Afficher"
+msgstr ""
+
+#: View/Medias/index.ctp:170
+msgid "Cacher"
 msgstr ""
 
 #: View/Medias/media.ctp:12
 msgid "Mettre en image à la une"
 msgstr ""
 
-#: View/Medias/media.ctp:14
+#: View/Medias/media.ctp:14;65
 msgid "Supprimer"
 msgstr ""
 
 #: View/Medias/media.ctp:17
 msgid "Insérer le lien l'article"
-msgstr ""
-
-#: View/Medias/media.ctp:19
-msgid "Afficher"
 msgstr ""
 
 #: View/Medias/media.ctp:29

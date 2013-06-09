@@ -27,16 +27,16 @@
 						<td style="width:140px"><label><?php echo __d('media',"Alignement"); ?></label></td>
 						<td>
 							<input type="radio" name="align" class="align" id="align-none-up" value="none" <?php if($_GET['class'] == '') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-none.png'); ?><label for="align-none-up">Aucun</label>
+							<?php echo $this->Html->image('/media/img/align-none.png'); ?><label for="align-none-up"><?php echo __d('media', "Aucun"); ?></label>
 
 							<input type="radio" name="align" class="align" id="align-left-up" value="left" <?php if($_GET['class'] == 'alignleft') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-left.png'); ?><label for="align-left-up">Gauche</label>
+							<?php echo $this->Html->image('/media/img/align-left.png'); ?><label for="align-left-up"><?php echo __d('media', "Gauche"); ?></label>
 
 							<input type="radio" name="align" class="align" id="align-center-up" value="center" <?php if($_GET['class'] == 'aligncenter') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-center.png'); ?><label for="align-center-up">Centre</label>
+							<?php echo $this->Html->image('/media/img/align-center.png'); ?><label for="align-center-up"><?php echo __d('media', "Centre"); ?></label>
 
 							<input type="radio" name="align" class="align" id="align-right-up" value="right" <?php if($_GET['class'] == 'alignright') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-right.png'); ?><label for="align-right-up">Droite</label>
+							<?php echo $this->Html->image('/media/img/align-right.png'); ?><label for="align-right-up"><?php echo __d('media', "Droite"); ?></label>
 						</td>
 					</tr>
 					<tr>
@@ -166,8 +166,8 @@ jQuery(function(){
 		e.preventDefault();
 		var a = $(this);
 		var height = a.parent().parent().find('.expand').outerHeight();
-		if(a.text() == 'Afficher'){
-			a.text('Cacher');
+		if(a.text() == '<?php echo __d('media', "Afficher"); ?>'){
+			a.text('<?php echo __d('media', "Cacher"); ?>');
 			a.parent().parent().animate({
 				height : 40 + height
 			});
@@ -175,7 +175,7 @@ jQuery(function(){
 				height : theFrame.height() + height
 			});
 		}else{
-			a.text('Afficher');
+			a.text('<?php echo __d('media', "Afficher"); ?>');
 			a.parent().parent().animate({
 				height : 40
 			});
