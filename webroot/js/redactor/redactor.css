@@ -3,9 +3,6 @@
 	border: 1px solid #ddd;
 	overflow: visible;
 }
-.redactor_box img{
-	max-width: 100%;
-}
 .redactor_box, .redactor_box textarea {
 	background-color: #fff;
 }
@@ -42,7 +39,6 @@ body .redactor_box_fullscreen {
 	outline: none;
 	border: none;
 	width: 100%;
-	white-space: normal;
 }
 
 .redactor_editor,
@@ -484,7 +480,7 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 	text-shadow: 0 1px 0 #fff;
 	padding: 0;
 	position: fixed;
-	top: 50px!important;
+	top: 50%;
 	left: 50%;
 	box-shadow: 0px 5px 60px #000;
   	border-radius: 3px;
@@ -693,16 +689,4 @@ body .redactor_toolbar li a.redactor_btn_alignment	 		{ background-position: -62
 .redactor_dropareabox.drop {
     background: #f4f4ee;
     border-color: #e0e5d6;
-}
-
-
-#redactor_modal iframe{border:none; }
-.redactor_editor .aligncenter{
-	display: block;  margin: 5px auto 5px auto;
-}
-.redactor_editor .alignleft{
-	display: block; float:left; margin: 0px 10px 10px 0px;
-}
-.redactor_editor .alignright{
-	display: block; float:right;  margin: 0px 0px 10px 10px;
 }
