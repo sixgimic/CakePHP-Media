@@ -10,7 +10,7 @@ class MediaHelperTest extends CakeTestCase {
         $Controller = new Controller();
         $View = new View($Controller);
         $this->Media = new MediaHelper($View);
-        $this->image = ROOT . DS . 'app' . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
+        $this->image = ROOT . DS . APP_DIR . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
     }
 
     public function startTest($method) {
