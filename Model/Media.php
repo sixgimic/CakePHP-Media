@@ -48,8 +48,12 @@ class Media extends AppModel{
 		}
 		if( isset($this->data['Media']['file']) && is_array($this->data['Media']['file']) && isset($this->data['Media']['ref']) ){
 			$model 		= ClassRegistry::init($this->data['Media']['ref']);
-			$path 		= $model->medias['path'];
 			$ref_id 	= $this->data['Media']['ref_id'];
+	        if(method_exists($this->data['Media']['ref'], 'uploadMediasPath')){
+	          $path = $model->uploadMediasPath($ref_id);
+	        }else{
+			  $path = $model->medias['path'];
+	        }
 			$pathinfo 	= pathinfo($this->data['Media']['file']['name']);
 			$extension  = strtolower($pathinfo['extension']) == 'jpeg' ? 'jpg' : $pathinfo['extension'];
 			if(!in_array($extension, $model->medias['extensions'])){
