@@ -48,14 +48,50 @@ class Media extends AppModel{
 		}
 		if( isset($this->data['Media']['file']) && is_array($this->data['Media']['file']) && isset($this->data['Media']['ref']) ){
 			$model 		= ClassRegistry::init($this->data['Media']['ref']);
-			$path 		= $model->medias['path'];
 			$ref_id 	= $this->data['Media']['ref_id'];
 			$pathinfo 	= pathinfo($this->data['Media']['file']['name']);
-			$extension  = strtolower($pathinfo['extension']) == 'jpeg' ? 'jpg' : $pathinfo['extension'];
+			$extension  = strtolower($pathinfo['extension']) == 'jpeg' ? 'jpg' : strtolower($pathinfo['extension']);
+
 			if(!in_array($extension, $model->medias['extensions'])){
 				$this->error = __d('media','Vous ne pouvez pas uploader ce type de fichier (%s seulement)', implode(', ', $model->medias['extensions']));
 				return false;
 			}
+      
+      // Max file by ref/ref_id
+      if ($model->medias['itemMax'] > 0 && $this->data['Media']['ref_id'] > 0) {
+        $qty = $this->find('count', array('conditions' => array('ref' => $this->data['Media']['ref'], 'ref_id' => $this->data['Media']['ref_id'])));
+        if ($qty >= $model->medias['itemMax']) {
+          $this->error = __d('media', "Vous ne pouvez envoyer qu'un nombre limité de fichier (%d). Veuillez en supprimer avant d'en envoyer de nouveau.", $model->medias['itemMax']);
+          return false;
+        }
+      }
+      
+      // Max width/height sur les images
+      if (in_array($extension, array('jpg', 'png', 'bmp', 'tiff')) && ($model->medias['widthMax'] > 0 || $model->medias['heightMax'] > 0 )) {
+        list($width,$height) = getimagesize($this->data['Media']['file']['tmp_name']);
+        if ($model->medias['widthMax'] > 0 && $width > $model->medias['widthMax']) {
+          $this->error = __d('media', "La largeur maximum autorisée est de %dpx", $model->medias['widthMax']);
+          return false;
+        }
+        if ($model->medias['heightMax'] > 0 && $height > $model->medias['heightMax']) {
+          $this->error = __d('media', "La hauteur maximum autorisée est de %dpx", $model->medias['heightMax']);
+          return false;
+        }
+      }
+      
+      // Max size
+      if ($model->medias['sizeMax'] > 0 && floor($this->data['Media']['file']['size'] / 1024) > $model->medias['sizeMax']) {
+        $humanSize = $model->medias['sizeMax'] > 1024 ? round($model->medias['sizeMax']/1024,1).' Mo' : $model->medias['sizeMax'].' Ko';
+        $this->error = __d('media', "Vous ne pouvez pas envoyer un fichier supérieur à %s", $humanSize);
+        return false;
+      }
+
+      if(method_exists($this->data['Media']['ref'], 'uploadMediasPath')){
+        $path = $model->uploadMediasPath($ref_id);
+      }else{
+        $path 		= $model->medias['path'];
+      }
+          
 			$filename 	= Inflector::slug($pathinfo['filename'],'-');
 			$search 	= array('/', '%id', '%mid', '%cid', '%y', '%m', '%f');
 			$replace 	= array(DS, $ref_id, ceil($ref_id/1000), ceil($ref_id/100), date('Y'), date('m'), Inflector::slug($filename));
