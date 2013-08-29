@@ -113,7 +113,6 @@ class MediasController extends AppController{
     }
 
     public function order(){
-        debug($this->request->data);
         if(!empty($this->request->data['Media'])){
             $id = key($this->request->data['Media']);
             $media = $this->Media->findById($id, array('ref','ref_id'));
