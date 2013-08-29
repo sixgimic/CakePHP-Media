@@ -1,10 +1,15 @@
 language: php
 
 php:
+    - 5.3
     - 5.4
 
+env:
+    - CAKE_VERSION=master
+    - CAKE_VERSION=2.4
+
 before_script:
-    - git clone git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp
+    - git clone --depth 1 --branch $CAKE_VERSION git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp
     - mv ../CakePHP-Media app/Plugin/Media
     - chmod -R 777 ../cakephp/app/tmp
     - chmod -R 777 ../cakephp/app/webroot
