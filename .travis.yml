@@ -14,9 +14,8 @@ before_script:
         public \$test = array(
             'datasource' => 'Database/Mysql',
             'database' => 'cakephp_test',
-            'host' => '0.0.0.0',
-            'login' => 'travis'
-            'host' => '',
+            'host' => '127.0.0.1',
+            'login' => 'travis',
             'persistent' => false,
         );
         }" > ../cakephp/app/Config/database.php
