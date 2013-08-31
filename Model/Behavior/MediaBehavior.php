@@ -4,10 +4,10 @@ class MediaBehavior extends ModelBehavior{
 	private $options = array(
 		'path'    => 'img/uploads/%y/%m/%f',
 		'extensions' => array('jpg','png'),
-		'itemMax' => 0,
-		'widthMax' => 0,
-		'heightMax' => 0,
-		'sizeMax' => 0, // in KB (Ko)
+		'limit' => 0,
+		'max_width' => 0,
+		'max_height' => 0,
+		'size' => 0, // in KB (Ko)
 	);
 
 	public function setup(Model $model, $config = array()){
