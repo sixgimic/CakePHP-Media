@@ -57,7 +57,7 @@ class Media extends AppModel{
 				return false;
 			}
 
-			// Max file by ref/ref_id
+			// Limit files count by ref/ref_id
 			if ($model->medias['limit'] > 0 && $this->data['Media']['ref_id'] > 0) {
 				$qty = $this->find('count', array('conditions' => array('ref' => $this->data['Media']['ref'], 'ref_id' => $this->data['Media']['ref_id'])));
 				if ($qty >= $model->medias['limit']) {
@@ -66,7 +66,7 @@ class Media extends AppModel{
 				}
 			}
 
-			// Max width/height sur les images
+			// Limit image size (for png/jpg/bmp/tiff)
 			if (in_array($extension, array('jpg', 'png', 'bmp', 'tiff')) && ($model->medias['max_width'] > 0 || $model->medias['max_height'] > 0 )) {
 				list($width,$height) = getimagesize($this->data['Media']['file']['tmp_name']);
 				if ($model->medias['max_width'] > 0 && $width > $model->medias['max_width']) {
@@ -79,7 +79,7 @@ class Media extends AppModel{
 				}
 			}
 
-			// Max size
+			// Limit Image size
 			if ($model->medias['size'] > 0 && floor($this->data['Media']['file']['size'] / 1024) > $model->medias['size']) {
 				$humanSize		= $model->medias['size'] > 1024 ? round($model->medias['size']/1024,1).' Mo' : $model->medias['size'].' Ko';
 				$this->error	= __d('media', "Vous ne pouvez pas envoyer un fichier supérieur à %s", $humanSize);

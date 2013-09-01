@@ -1,4 +1,45 @@
 <?php
+class PostWithWidthLimit extends AppModel{
+    public $useTable = 'posts';
+    public $actsAs = array(
+        'Media.Media' => array(
+            'path' => 'img/%f',
+            'extensions' => array('jpg','png','pdf'),
+            'max_width'  => 500
+        )
+    );
+}
+class PostWithValidWidthLimit extends AppModel{
+    public $useTable = 'posts';
+    public $actsAs = array(
+        'Media.Media' => array(
+            'path' => 'img/%f',
+            'extensions' => array('jpg','png','pdf'),
+            'max_width'  => 1500
+        )
+    );
+}
+class PostWithLimit extends AppModel{
+    public $useTable = 'posts';
+    public $actsAs = array(
+        'Media.Media' => array(
+            'path' => 'img/%f',
+            'extensions' => array('jpg','png','pdf'),
+            'limit'  => 1
+        )
+    );
+}
+class PostWithSizeLimit extends AppModel{
+    public $useTable = 'posts';
+    public $actsAs = array(
+        'Media.Media' => array(
+            'path' => 'img/%f',
+            'extensions' => array('jpg','png','pdf'),
+            'size'  => 40
+        )
+    );
+}
+
 
 class MediaTest extends CakeTestCase {
 
@@ -62,6 +103,99 @@ class MediaTest extends CakeTestCase {
         $this->Media->delete($this->Media->id);
     }
 
+    public function testBeforeSaveWithWidthLimit() {
+        $file = array(
+            'name' => 'testHelper.png',
+            'type' => 'image/png',
+            'tmp_name' => $this->image,
+            'error' => (int) 0,
+            'size' => (int) 52085
+        );
+        $save =$this->Media->save(array(
+            'ref'    => 'PostWithWidthLimit',
+            'ref_id' => 1,
+            'file'   => $file
+        ));
+        $this->assertEquals(false, $save);
+    }
+
+    public function testBeforeSaveWithValidWidthLimit() {
+        $file = array(
+            'name' => 'testHelper.png',
+            'type' => 'image/png',
+            'tmp_name' => $this->image,
+            'error' => (int) 0,
+            'size' => (int) 52085
+        );
+        $save =$this->Media->save(array(
+            'ref'    => 'PostWithValidWidthLimit',
+            'ref_id' => 1,
+            'file'   => $file
+        ));
+        $media = $this->Media->read();
+        $this->assertEquals(true, !empty($save));
+        $this->Media->delete($this->Media->id);
+    }
+
+    public function testBeforeSaveWithLimit() {
+        $file = array(
+            'name' => 'testHelper.png',
+            'type' => 'image/png',
+            'tmp_name' => $this->image,
+            'error' => (int) 0,
+            'size' => (int) 52085
+        );
+        $save =$this->Media->save(array(
+            'ref'    => 'PostWithLimit',
+            'ref_id' => 1,
+            'file'   => $file
+        ));
+        $this->assertEquals(false, empty($save));
+        $firstid = $this->Media->id;
+        $this->Media->create();
+        $save =$this->Media->save(array(
+            'ref'    => 'PostWithLimit',
+            'ref_id' => 1,
+            'file'   => $file
+        ));
+        $this->assertEquals(false, $save);
+        $this->Media->delete($firstid);
+    }
+
+    public function testBeforeSaveWithSizeLimit() {
+        // Une image trop lourde (50ko > 40 ko)
+        $file = array(
+            'name' => 'testHelper.png',
+            'type' => 'image/png',
+            'tmp_name' => $this->image,
+            'error' => (int) 0,
+            'size' => (int) 52085
+        );
+        $save =$this->Media->save(array(
+            'ref'    => 'PostWithSizeLimit',
+            'ref_id' => 1,
+            'file'   => $file
+        ));
+        $media = $this->Media->read();
+        $this->assertEquals(false, $save);
+
+        // Une image à la bonne taille
+        $file = array(
+            'name' => 'testHelper.png',
+            'type' => 'image/png',
+            'tmp_name' => str_replace('.png', '50.png', $this->image),
+            'error' => (int) 0,
+            'size' => (int) 1955
+        );
+        $save =$this->Media->save(array(
+            'ref'    => 'PostWithSizeLimit',
+            'ref_id' => 1,
+            'file'   => $file
+        ));
+        $media = $this->Media->read();
+        $this->assertEquals(true, !empty($save));
+        $this->Media->delete($this->Media->id);
+    }
 
     public function testDuplicate() {
         $file = array('name' => 'testHelper.png','type' => 'image/png','tmp_name' => $this->image,'error' => (int) 0,'size' => (int) 52085);

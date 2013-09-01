@@ -4,7 +4,9 @@ App::uses('MediasController', 'Media.Controller');
 App::uses('AppModel', 'Model');
 
 class Post extends AppModel{
-    public $actsAs = array('Media.Media' => array('extensions' => array('jpg','png','pdf')));
+    public $actsAs = array('Media.Media' => array(
+        'extensions' => array('jpg','png','pdf'),
+    ));
 }
 class Page extends AppModel{}
 class TestmediasController extends MediasController {
