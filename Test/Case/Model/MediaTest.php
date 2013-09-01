@@ -6,7 +6,7 @@ class MediaTest extends CakeTestCase {
 
     public function setUp() {
         parent::setUp();
-        $this->image = ROOT . DS . 'app' . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
+        $this->image = ROOT . DS . APP_DIR . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
         $this->Media = $this->getMockForModel('Media.Media', array('move_uploaded_file'));
         $this->Media->expects($this->any())->method('move_uploaded_file')->will($this->returnCallback('test_move_uploaded_file'));
     }

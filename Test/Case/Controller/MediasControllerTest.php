@@ -12,7 +12,7 @@ class MediasControllerTest extends ControllerTestCase {
         ));
         $Medias->expects($this->any())->method('canUploadMedias')->will($this->returnValue(true));
         $Medias->Media->expects($this->once())->method('move_uploaded_file')->will($this->returnCallback('test_move_uploaded_file'));
-        $this->image = ROOT . DS . 'app' . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
+        $this->image = ROOT . DS . APP_DIR . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
         $_FILES = array('file' => array('name' => 'testHelper.png','type' => 'image/png','tmp_name' => $this->image,'error' => (int) 0,'size' => (int) 52085));
         $return = $this->testAction('/media/testmedias/upload/Post/1');
 
@@ -26,7 +26,7 @@ class MediasControllerTest extends ControllerTestCase {
     }
 
     public function testUploadWrongFileType() {
-        $this->image = ROOT . DS . 'app' . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
+        $this->image = ROOT . DS . APP_DIR . DS . 'Plugin' . DS . 'Media' . DS . 'Test' . DS . 'testHelper.png';
         $_FILES = array('file' => array('name' => 'testHelper.csv','type' => 'image/png','tmp_name' => $this->image,'error' => (int) 0,'size' => (int) 52085));
         $return = $this->testAction('/media/testmedias/upload/Post/1');
         $this->assertEquals(false, $return);
