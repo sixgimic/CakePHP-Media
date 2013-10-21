@@ -106,11 +106,6 @@ class Post extends AppModel{
 
             <h2>Helper</h2>
 
-            <div class="notif error">
-                Cet helper a été retiré dans les dernière version du plugins, utilisez l'<a href="https://github.com/Grafikart/CakePHP-ImageHelper">ImageHelper</a> à la place
-                <a href="#" class="close">x</a>
-            </div>
-
             <p>Maintenant que tout est en place il faut pouvoir ajouter, éditer et supprimer des images. Pour réaliser cela le plugin apporte un helper "Media" qui vous permet de générer une interface drag & drop rapidement. Cet helper fonctionne de 2 façon : </p>
 
             <p>Soit vous pouvez créer une iframe vers le gestionnaire de média :</p>
@@ -126,6 +121,11 @@ echo $this->Media->redactor($fieldName, $options = array ( ));
 ?></pre>
 
             <h2 id="redim">Redimensionnement</h2>
+
+            <div class="notif error">
+                Cette methode a été retirée dans les dernières versions du plugin, utilisez l'<a href="https://github.com/Grafikart/CakePHP-ImageHelper">ImageHelper</a> à la place
+                <a href="#" class="close">x</a>
+            </div>
 
             <p>Maintenant que vous avez vos outils pour ajouter et récupérer les images il est temps de les afficher et de les redimensionner. Cela se fait encore depuis le helper Media</p>
 
