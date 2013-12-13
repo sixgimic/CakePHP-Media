@@ -4,9 +4,9 @@ class MediasController extends AppController{
 
     public $order = array('Media.position ASC');
 
-	public function isAuthorized($user = null){
-	    return true;
-	}
+    public function isAuthorized($user = null){
+        return true;
+    }
 
     public function canUploadMedias($ref, $ref_id){
         if(method_exists('AppController', 'canUploadMedias')){
