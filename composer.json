@@ -1,5 +1,5 @@
 {
-  "name":"Grafikart/cakephp-media",
+  "name":"grafikart/cakephp-media",
   "version": "1.0.0",
   "description":"The main goal of this plugin is to give you the ability to create and associatie any kind of media with your content. This system use behaviour to associate medias with your content and a helper to manage the UI.",
   "type":"cakephp-plugin",
