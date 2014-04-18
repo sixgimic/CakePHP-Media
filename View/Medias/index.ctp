@@ -1,194 +1,132 @@
-<div class="bloc">
-    <div class="content">
-		<?php if(isset($_GET['src'])): ?>
-			<div class="expand item">
-				<table>
-					<tr>
-						<td style="width:140px"><img src="<?php echo $_GET['src']; ?>"></td>
-						<td>
-							<p><strong><?php echo __d('media',"Nom du fichier"); ?> :</strong> <?php echo basename($_GET['src']); ?></p>
-						</td>
-					</tr>
-				</table>
-				<table>
-					<tr>
-						<td style="width:140px"><label><?php echo __d('media',"Titre"); ?></label></td>
-						<td><input class="title" name="title" type="text"></td>
-					</tr>
-					<tr>
-						<td style="width:140px"><label><?php echo __d('media',"Texte alternatif"); ?></label></td>
-						<td><input class="alt" name="alt" type="text" value="<?php echo $_GET['alt']; ?>"></td>
-					</tr>
-					<tr>
-						<td style="width:140px"><label><?php echo __d('media',"Cible du lien"); ?></label></td>
-						<td><input class="href" name="href" type="text"></td>
-					</tr>
-					<tr>
-						<td style="width:140px"><label><?php echo __d('media',"Alignement"); ?></label></td>
-						<td>
-							<input type="radio" name="align" class="align" id="align-none-up" value="none" <?php if($_GET['class'] == '') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-none.png'); ?><label for="align-none-up"><?php echo __d('media', "Aucun"); ?></label>
 
-							<input type="radio" name="align" class="align" id="align-left-up" value="left" <?php if($_GET['class'] == 'alignleft') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-left.png'); ?><label for="align-left-up"><?php echo __d('media', "Gauche"); ?></label>
+<div id="dropzone">
 
-							<input type="radio" name="align" class="align" id="align-center-up" value="center" <?php if($_GET['class'] == 'aligncenter') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-center.png'); ?><label for="align-center-up"><?php echo __d('media', "Centre"); ?></label>
+	<div class="tabs">
+		<a id="browse" href="#" class="tab-item"><?php echo __d('media','Upload a new file'); ?></a>
+		<div class="tab-item is-current"><?= __d('media','Gallery'); ?></div>
+	</div>
 
-							<input type="radio" name="align" class="align" id="align-right-up" value="right" <?php if($_GET['class'] == 'alignright') echo 'checked'; ?>>
-							<?php echo $this->Html->image('/media/img/align-right.png'); ?><label for="align-right-up"><?php echo __d('media', "Droite"); ?></label>
-						</td>
-					</tr>
-					<tr>
-						<td style="width:140px"> &nbsp; </td>
-						<td>
-							<p><a href="" class="submit"><?php echo __d('media',"Insérer dans l'article"); ?></a>
-						</td>
-					</tr>
-					<input type="hidden" name="file" value="<?php echo $_GET['src']; ?>" class="file">
-				</table>
+	<div class="gallery">
+		<?php foreach ($medias as $media): $media = current($media); ?>
+			<?php require('media.ctp'); ?>
+		<?php endforeach ?>
+		<div class="gallery-item" id="gallery-loader">
+			<div class="gallery-item-thumb">
+				<div class="gallery-loader"></div>
 			</div>
-		<?php endif; ?>
-		<div id="plupload">
-		    <div id="droparea" href="#">
-		    	<p><?php echo __d('media',"Déplacer les fichiers ici"); ?></p>
-		    	<?php echo __d('media',"ou"); ?><br/>
-		    	<a id="browse" href="#"><?php echo __d('media',"Parcourir"); ?></a>
-		    	<p class="small">(<?php echo __d('media','%s seulement',implode(', ', $extensions)); ?>)</p>
-		    </div>
 		</div>
-		<table class="head" cellspacing="0">
-			<thead>
-				<tr>
-					<th style="width:55%"><?php echo __d('media',"Médias"); ?></th>
-					<th style="width:20%"> &nbsp; </th>
-					<th style="width:25%"><?php echo __d('media',"Actions"); ?></th>
-				</tr>
-			</thead>
-		</table>
-		<div id="filelist">
-			<?php echo $this->Form->create('Media',array('url'=>array('controller'=>'medias','action'=>'order'))); ?>
-			<?php foreach($medias as $media): $media = current($media);  ?>
-				<?php require('media.ctp'); ?>
-			<?php endforeach; ?>
-			<?php echo $this->Form->end(); ?>
-		</div>
+		<div class="cb"></div>
+	</div>
 
-    </div>
+	<div class="overlay">
+		<div class="borders"><span><?php echo __d('media',"Drop your files to upload"); ?></span></div>
+	</div>
 </div>
 
-<?php $this->Html->script('/media/js/jquery.form.js',array('inline'=>false)); ?>
-<?php $this->Html->script('/media/js/plupload.js',array('inline'=>false)); ?>
-<?php $this->Html->script('/media/js/plupload.html5.js',array('inline'=>false)); ?>
-<?php $this->Html->script('/media/js/plupload.flash.js',array('inline'=>false)); ?>
-<?php $this->Html->scriptStart(array('inline'=>false)); ?>
+<div id="loader"></div>
 
+<?php $this->start("script"); ?>
+<?= $this->Html->script('/media/js/underscore.js'); ?>
+<?= $this->Html->script('/media/js/dropzone.js'); ?>
+<script type="text/javascript">
+(function($){
 
-jQuery(function(){
-	$( "#filelist>form" ).sortable({
-		update:function(){
-			i = 0;
-			$('#filelist>form>div').each(function(){
-				i++;
-				$(this).find('input').val(i);
-			});
-			$('#MediaIndexForm').ajaxSubmit();
-		}
+	var timer = null;
+	var $loader = $('#loader');
+	dragEnteredEls = [];
+
+	// Dropzone
+	var drop = $("body").dropzone({
+		url: "<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'editor'=>$editor,'?' => "id=$id")); ?>",
+		//acceptedFiles: ".<?php echo implode(';.', $extensions); ?>",
+		clickable: "#browse",
+		dragenter: function (e) {
+		    dragEnteredEls.push(e.target);
+		    $('.overlay').stop().fadeIn();
+		},
+		drop: function (e) {
+		    $('.overlay').stop().fadeOut();
+		},
+		dragleave: function (e) {
+		    dragEnteredEls = _.without(dragEnteredEls, e.target);
+		    if (dragEnteredEls.length === 0) {
+		        $('.overlay').stop().fadeOut();
+		    }
+		},
+		success: function (file, data) {
+			$item = $($.parseJSON(data).content);
+			$item.addClass('is-active');
+			$('.gallery-item-infos').hide();
+			$('.gallery-item-infos', $item).show();
+			$('.gallery').prepend($item);
+		},
+		uploadprogress: function(file, percent) {
+			$loader.show();
+			$('.gallery-loader', $loader).height(percent + "%");
+			if(percent === 100){
+				$loader.hide();
+			}
+		},
+		previewTemplate: false,
 	});
 
-	var theFrame = $("#medias-<?php echo $ref; ?>-<?php echo $ref_id; ?>", parent.document.body);
-	var uploader = new plupload.Uploader({
-		runtimes : 'html5,flash',
-		container: 'plupload',
-		browse_button : 'browse',
-		max_file_size : '50mb',
-		flash_swf_url : '<?php echo Router::url('/media/js/plupload.flash.swf'); ?>',
-		url : '<?php echo Router::url(array('controller'=>'medias','action'=>'upload',$ref,$ref_id,'editor'=>$editor,'?' => "id=$id")); ?>',
-		 filters : [
-			{title : "Accepted files", extensions : "<?php echo implode(',', $extensions); ?>"},
-		],
-		drop_element : 'droparea',
-		multipart:true,
-		urlstream_upload:true
+	// Order
+	$('.gallery').sortable({
+		items: '.gallery-item',
+		handle: '.gallery-item-thumb',
+		update: function(event, ui) {
+    	var order = $(this).sortable("toArray", {attribute: "data-id"});
+    	var ids = {};
+    	for(var i in order){
+    		ids[order[i]] = i;
+    	}
+    	$loader.stop().fadeIn();
+    	$.post('<?= $this->Html->url(array('action' => 'order')); ?>', {Media: ids}, function(data){
+    		$loader.stop().fadeOut();
+    	});
+    }
 	});
+	$('.gallery').disableSelection();
 
-	uploader.init();
-
-	uploader.bind('FilesAdded', function(up, files) {
-		for (var i in files) {
-			$('#filelist>form').prepend('<div class="item" id="' + files[i].id + '">&nbsp; &nbsp;' + files[i].name + ' (' + plupload.formatSize(files[i].size) + ') <div class="progressbar"><div class="progress"></div></div></div>');
-		}
-		uploader.start();
-		$('#droparea').removeClass('dropping');
-		theFrame.css({ height:$('body').height() + 40 });
-
-	});
-
-	uploader.bind('UploadProgress', function(up, file) {
-		$('#'+file.id).find('.progress').css('width',file.percent+'%')
-	});
-
-	uploader.bind('FileUploaded', function(up, file, response){
-		var response = jQuery.parseJSON(response.response);
-		if(response.error){
-			alert(response.error)
-		}else{
-			$('#'+file.id).before(response.content);
-		}
-		$('#'+file.id).remove();
-	});
-	uploader.bind('Error',function(up, err){
-		alert(err.message);
-		$('#droparea').removeClass('dropping');
-		uploader.refresh();
-	});
-	$('#droparea').bind({
-       dragover : function(e){
-           $(this).addClass('dropping');
-       },
-       dragleave : function(e){
-           $(this).removeClass('dropping');
-       }
-	});
-
-	$('a.del').live('click',function(e){
+	// Clicks on items to reveal details
+	$('.gallery').on('click', '.gallery-item-thumb', function(e){
 		e.preventDefault();
-		elem = $(this);
-		if(confirm('<?php echo __d('media',"Voulez vous vraiment supprimer ce média ?"); ?>')){
-			$.post(elem.attr('href'),{},function(data){
-				elem.parents('.item').slideUp();
-			});
-		}
-		theFrame.animate({ height:theFrame.height() - 40 });
+		$item = $(this).parent();
+		$item.addClass('is-active').siblings().removeClass('is-active');
+		$('.gallery-item-infos').hide();
+		$('.gallery-item-infos', $item).show();
 	});
 
-	$('a.toggle').live('click',function(e){
+	$('.gallery').on('submit', 'form', function(e){
+		datas = $(this).serialize();
+		$loader.stop().fadeIn();
+		$.post($(this).attr('action'), datas, function(data){
+			$loader.fadeOut();
+		})
 		e.preventDefault();
-		var a = $(this);
-		var height = a.parent().parent().find('.expand').outerHeight();
-		if(a.text() == '<?php echo __d('media', "Afficher"); ?>'){
-			a.text('<?php echo __d('media', "Cacher"); ?>');
-			a.parent().parent().animate({
-				height : 40 + height
-			});
-			theFrame.animate({
-				height : theFrame.height() + height
-			});
-		}else{
-			a.text('<?php echo __d('media', "Afficher"); ?>');
-			a.parent().parent().animate({
-				height : 40
-			});
-			theFrame.animate({
-				height : theFrame.height() - height
+		return false;
+	})
+
+	// Delete link
+	$('.gallery').on('click', '.delete', function(e){
+		e.preventDefault();
+		if (confirm("<?= __d('media','Do you really want to delete this file ?'); ?>")) {
+			$this = $(this);
+			$.get($(this).attr('href'), {}, function(){
+				$this.parents('.gallery-item').fadeOut();
 			});
 		}
-	});
+	})
 
-	theFrame.height($(document.body).height() + 50);
+	$('.gallery').on('blur', '.autosubmit', function(){
+		$(this).parents('form').trigger('submit');
+	})
+
 
 	<?php if($editor): ?>
-		$('a.submit').live('click', function(){
+
+		$('.gallery').on('click', 'a.submit', function(e){
+			e.preventDefault();
 			var $this = $(this);
 			var html = createHtmlElement($this);
 			var editor = '<?php echo $editor; ?>';
@@ -198,16 +136,15 @@ jQuery(function(){
 		});
 
 		function createHtmlElement($this) {
-			var item = $this.parents('.item');
+			var item = $this.parents('.gallery-item');
 			var type = $('.filetype', item).val();
 			if(type === 'pic') {
-
-				var html = '<img src="'+$('.file', item).val()+'"';
+				var html = '<img src="'+$('.path', item).val()+'"';
 				if( $('.alt', item).val() != '' ){
 					html += ' alt="'+$('.alt', item).val()+'"';
 				}
-				if( $('.align:checked', item).val() != 'none' ){
-					html += ' class="align'+$('.align:checked', item).val()+'"';
+				if( $('.align', item).val() != 'none' ){
+					html += ' class="align'+$('.align', item).val()+'"';
 				}
 				html += ' />';
 				if( $('.href', item).val() != '' ){
@@ -220,6 +157,7 @@ jQuery(function(){
 		}
 
 	<?php endif; ?>
-});
 
-<?php $this->Html->scriptEnd(); ?>
+})(jQuery);
+</script>
+<?php $this->end(); ?>
