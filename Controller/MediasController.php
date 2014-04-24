@@ -62,6 +62,7 @@ class MediasController extends AppController{
         $media = $this->Media->save(array(
             'ref'    => $ref,
             'ref_id' => $ref_id,
+            'name'   => basename($_FILES['file']['name']),
             'file'   => $_FILES['file']
         ));
         if(!$media){
@@ -116,6 +117,25 @@ class MediasController extends AppController{
         $this->redirect(array('action' => 'index', $ref, $ref_id));
     }
 
+    /**
+    * Permet de modifier le titre d'une image
+    **/
+    public function update($id){
+        $media = $this->Media->findById($id);
+        if (empty($media)) {
+            throw new NotFoundException();
+        }
+        if(!$this->canUploadMedias($media['Media']['ref'], $media['Media']['ref_id'])){
+            throw new ForbiddenException();
+        }
+        $this->Media->id = $id;
+        $save = $this->Media->save(array(
+            'name' => $this->request->data['Media']['name']
+        ));
+        die();
+        return false;
+    }
+
     public function order(){
         if(!empty($this->request->data['Media'])){
             $id = key($this->request->data['Media']);
@@ -128,6 +148,7 @@ class MediasController extends AppController{
                 $this->Media->saveField('position',$v);
             }
         }
+        die('success');
         return false;
     }
 

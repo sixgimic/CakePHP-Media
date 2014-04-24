@@ -4,9 +4,11 @@ class MediaHelper extends AppHelper{
 	public $helpers = array('Html','Form');
 	public $javascript = false;
 	public $explorer = false;
+	public $editorcss = false;
 
 	public function tinymce($field, $options = array()){
-		$this->Html->script('/media/js/tinymce/tiny_mce.js',array('inline'=>false));
+		$this->Html->script('/media/js/tinymce/tinymce.min.js',array('inline'=>false));
+		$this->Html->script('/media/js/tinymce/editor.js',array('inline'=>false));
 		return $this->textarea($field, 'tinymce', $options);
 	}
 
@@ -28,11 +30,14 @@ class MediaHelper extends AppHelper{
 		$html = $this->Form->input($field, $options);
 		$models = $this->Form->_models;
 		$model = key($models);
-        if(isset($this->request->data[$model]['id']) && !$this->explorer){
+		if(isset($this->request->data[$model]['id']) && !$this->explorer){
 			$html .= '<input type="hidden" id="explorer" value="' . $this->Html->url('/media/medias/index/'.$model.'/'.$this->request->data[$model]['id']) . '">';
 			$this->explorer = true;
-    	}
-    	return $html;
+  	}
+  	if (!$this->editorcss) {
+  		$html .= '<input type="hidden" id="editorcss" value="'. $this->Html->url('/media/css/editor.css') . '"/>';
+  	}
+    return $html;
 	}
 
 	public function iframe($ref,$ref_id){

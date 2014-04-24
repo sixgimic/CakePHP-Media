@@ -12,7 +12,7 @@ CKEDITOR.dialog.add('grafikart', function(editor)
 	return {
 		title : 'Insérer un média',
 		minWidth : 1000,
-		minHeight : 500,
+		minHeight : 550,
 		buttons : [],
 		contents :
 		[
@@ -24,7 +24,7 @@ CKEDITOR.dialog.add('grafikart', function(editor)
 				[ {
 					type   : 'iframe',
 					width  : '100%',
-					height : '500px',
+					height : '550px',
 					src    : $('#explorer').val() + '/editor:ckeditor',
 				} ]
 			},
