@@ -1,28 +1,48 @@
 language: php
 
 php:
-    - 5.3
-    - 5.4
+  - 5.3
+  - 5.4
+  - 5.5
 
 env:
-    - CAKE_VERSION=master
+  global:
+    - PLUGIN_NAME=Media
+    - DB=mysql
+    - REQUIRE="phpunit/phpunit:3.7.31"
+
+  matrix:
+    - DB=mysql CAKE_VERSION=master
+
+matrix:
+  include:
+    - php: 5.3
+      env:
+        - CAKE_VERSION=master
+        - COVERALLS=1
+    - php: 5.4
+      env:
+        - CAKE_VERSION=master
+        - COVERALLS=1
+    - php: 5.5
+      env:
+        - CAKE_VERSION=master
+        - COVERALLS=1
 
 before_script:
-    - git clone --depth 1 --branch $CAKE_VERSION git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp
-    - mv ../CakePHP-Media app/Plugin/Media
-    - chmod -R 777 ../cakephp/app/tmp
-    - chmod -R 777 ../cakephp/app/webroot
-    - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
-    - echo "<?php
-        class DATABASE_CONFIG {
-        public \$test = array(
-            'datasource' => 'Database/Mysql',
-            'database' => 'cakephp_test',
-            'host' => '127.0.0.1',
-            'login' => 'travis',
-            'persistent' => false,
-        );
-        }" > ../cakephp/app/Config/database.php
+  - git clone https://github.com/burzum/travis.git --depth 1 ../travis
+  - ../travis/before_script.sh
+  - if [ "$PHPCS" != 1 ]; then
+            echo "
+                require_once APP . DS . 'vendor' . DS . 'phpunit' . DS . 'phpunit' . DS . 'PHPUnit' . DS . 'Autoload.php';
+            " >> ../cakephp/app/Config/bootstrap.php;
+    fi
 
 script:
-    - ./lib/Cake/Console/cake test Media PluginMedia --stderr
+  - ../travis/script.sh
+
+after_success:
+  - ../travis/after_success.sh
+
+notifications:
+  email: false
