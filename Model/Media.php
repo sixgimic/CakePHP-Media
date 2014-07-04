@@ -11,11 +11,15 @@ class Media extends AppModel{
 		
 		$resized = glob(WWW_ROOT.$info['dirname'].'/'.$info['filename'].'_*x*.jpg') || array();
 		$original= glob(WWW_ROOT.$info['dirname'].'/'.$info['filename'].'.'.$info['extension']) || array(); 
-		foreach($resized as $v){
-			unlink($v);
+		if(is_array($resized)){
+			foreach($resized as $v){
+				unlink($v);
+			}
 		}
-		foreach($original as $v){
-			unlink($v);
+		if(is_array($original)){
+			foreach($original as $v){
+				unlink($v);
+			}
 		}
 		return true;
 	}
