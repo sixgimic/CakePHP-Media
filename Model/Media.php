@@ -8,10 +8,13 @@ class Media extends AppModel{
 	public function beforeDelete($cascade = true){
 		$file = $this->field('file');
 		$info = pathinfo($file);
-		foreach(glob(WWW_ROOT.$info['dirname'].'/'.$info['filename'].'_*x*.jpg') as $v){
+		
+		$resized = glob(WWW_ROOT.$info['dirname'].'/'.$info['filename'].'_*x*.jpg') || array();
+		$original= glob(WWW_ROOT.$info['dirname'].'/'.$info['filename'].'.'.$info['extension']) || array(); 
+		foreach($resized as $v){
 			unlink($v);
 		}
-		foreach(glob(WWW_ROOT.$info['dirname'].'/'.$info['filename'].'.'.$info['extension']) as $v){
+		foreach($original as $v){
 			unlink($v);
 		}
 		return true;
