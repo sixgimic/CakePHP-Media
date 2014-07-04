@@ -27,7 +27,7 @@ function test_move_uploaded_file($filename, $destination){
 }
 
 
-class PluginMediaTest extends CakeTestSuite {
+class AllMediaTest extends CakeTestSuite {
     public static function suite() {
         $suite = new CakeTestSuite('Plugin Media');
         $suite->addTestDirectoryRecursive(dirname(__FILE__));
