@@ -105,8 +105,8 @@ class Media extends AppModel{
 			}
 
 			$filename 	= Inflector::slug($pathinfo['filename'],'-');
-			$search 	= array('/', '%id', '%mid', '%cid', '%y', '%m', '%f');
-			$replace 	= array(DS, $ref_id, ceil($ref_id/1000), ceil($ref_id/100), date('Y'), date('m'), Inflector::slug($filename));
+			$search 	= array('/', '%id', '%mid', '%cid', '%y', '%m', '%f', '%u');
+			$replace 	= array(DS, $ref_id, ceil($ref_id/1000), ceil($ref_id/100), date('Y'), date('m'), Inflector::slug($filename), md5(Inflector::slug($filename).time()));
 			$file  		= str_replace($search, $replace, $path) . '.' . $extension;
 			$this->testDuplicate($file);
 			if(!file_exists(dirname(WWW_ROOT.$file))){
